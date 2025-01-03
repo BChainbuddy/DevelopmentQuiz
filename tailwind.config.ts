@@ -12,6 +12,11 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        ibmPlexMono: ["var(--font-ibmPlexMono)"],
+        inter: ["var(--font-inter)"],
+        inriaSans: ["var(--font-inriaSans)"],
+      },
     },
   },
   plugins: [],
