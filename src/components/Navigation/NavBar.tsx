@@ -9,7 +9,7 @@ export default function Navbar() {
         className="font-inriaSans lg:text-5xl md:text-4xl text-2xl"
         href="/"
       >
-        DevQuizz
+        DevQuiz
       </Link>
       <div className="flex flex-row justify-center items-end lg:space-x-2 md:space-x-1 font-inter">
         <NavOption href="/game" name="Game" />

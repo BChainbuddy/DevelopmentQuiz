@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased text-6xl ${inter.variable} ${ibmPlexMono.variable} ${inriaSans.variable} px-[10%]`}
+        className={`antialiased ${inter.variable} ${ibmPlexMono.variable} ${inriaSans.variable} px-[10%] flex flex-col min-h-screen`}
       >
         <Navbar />
         {children}

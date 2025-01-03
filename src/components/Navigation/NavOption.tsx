@@ -14,8 +14,10 @@ export default function NavOption({ name, href }: NavOptionProps) {
   return (
     <Link
       href={href}
-      className={`lg:text-xl md:text-lg text-base cursor-pointer opacity-80 hover:opacity-100 border-b-2 border-transparent transition-all duration-300 ${
-        href === pathname && "font-semibold opacity-100 border-b-white"
+      className={`lg:text-xl md:text-lg text-base cursor-pointer hover:opacity-100 border-b-2 border-transparent transition-all duration-300 ${
+        href === pathname
+          ? "font-semibold opacity-100 border-b-white"
+          : "opacity-80"
       }`}
     >
       {name}
