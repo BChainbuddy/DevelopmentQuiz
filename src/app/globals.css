@@ -18,3 +18,21 @@ body {
   color: var(--foreground);
   background: var(--background);
 }
+
+.slideIn {
+  animation: slideInAnimation 1s 0.5s forwards linear;
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+@keyframes slideInAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
