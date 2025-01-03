@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ibmPlexMono, inriaSans, inter } from "./fonts/fonts";
+import Navbar from "@/components/Navigation/NavBar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased text-6xl ${inter.variable} ${ibmPlexMono.variable} ${inriaSans.variable}`}
+        className={`antialiased text-6xl ${inter.variable} ${ibmPlexMono.variable} ${inriaSans.variable} px-[10%]`}
       >
+        <Navbar />
         {children}
       </body>
     </html>
