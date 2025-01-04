@@ -1,45 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Question from "./Question";
 import AnswerCard from "./AnswerCard";
 
 interface QuizProps {
+  startGame: boolean;
   setStartGame: (start: boolean) => void;
+  newRound: () => void;
+  question: string;
+  answers: { choice: string; answer: string }[];
+  correctAnswer: string;
 }
 
-export default function Quiz({ setStartGame }: QuizProps) {
+export default function Quiz({
+  startGame,
+  setStartGame,
+  newRound,
+  question,
+  answers,
+  correctAnswer,
+}: QuizProps) {
   const [countdown, setCountdown] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
 
-  const [correctAnswer, setCorrectAnswer] = useState("A"); // From API
-  const [answers, setAnswers] = useState([
-    { choice: "A", answer: "Computer Style Sheets" },
-    { choice: "B", answer: "Computer Style Sheets" },
-    { choice: "C", answer: "Computer Style Sheets" },
-  ]); // From API
+  const countdownIntervalRef = useRef<number | null>(null);
 
   const selectAnswer = (choice: string) => {
     setSelectedAnswer(choice);
 
     // Countdown to next round
     let timeLeft = 10;
-    const countdownInterval = setInterval(() => {
+    countdownIntervalRef.current = window.setInterval(() => {
       setCountdown(timeLeft);
       if (timeLeft === 0) {
-        clearInterval(countdownInterval);
+        newRound();
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
       }
       timeLeft--;
     }, 1000);
+  };
 
-    // Fetch api data
+  const handleLeaveGame = () => {
+    // Clear the interval if it's active
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
 
-    //Reset everything
+    setCountdown(0);
+    setSelectedAnswer("");
+
+    setStartGame(false);
   };
 
   return (
     <div className="w-full flex-1 h-full flex flex-col font-ibmPlexMono items-center justify-evenly">
-      <Question question="What does css stand for?" />
+      <Question question={question} />
       <div className="flex flex-row justify-between w-full items-center gap-[15%]">
         {answers && (
           <>
@@ -61,7 +81,7 @@ export default function Quiz({ setStartGame }: QuizProps) {
         {countdown ? (
           <button
             className="slideIn bg-white opacity-90 hover:opacity-100 text-black py-1 px-3 rounded-lg mt-2 text-sm transition-all duration-300 ease-out"
-            onClick={() => setStartGame(false)}
+            onClick={handleLeaveGame}
           >
             LEAVE GAME
           </button>

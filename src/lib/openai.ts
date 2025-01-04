@@ -35,17 +35,24 @@ export async function fetchQuestions() {
       {
         role: "system",
         content:
-          "You are a helpful quiz generator. Provide short, easy questions from the web development field with 3 multiple-choice answers.",
+          "You are a helpful software development quiz generator. Provide unique specific easy to hard question from any topic in the field of web development field with exactly three multiple-choice answers, the question should be very technical as is targeted towards developers looking for a job.",
       },
       {
         role: "user",
-        content:
-          "Get me one relevant question and 3 multiple choice answers from the web development field. The question should be easy.",
+        content: `Please format the response exactly as shown below, without any additional text or explanations:
+  
+  Question: [Your Question Here]
+  
+  A) [Answer Choice A]
+  B) [Answer Choice B]
+  C) [Answer Choice C]
+  
+  Correct answer: [A/B/C]`,
       },
     ],
-    max_tokens: 100, // limit the length of the response
-    temperature: 0.7, // creativity level
-    n: 1, // number of answers to generate
+    max_tokens: 500, // Increased to ensure response completeness
+    temperature: 0.9, // Lowered for more deterministic outputs
+    n: 1, // Number of responses to generate
   };
 
   try {
