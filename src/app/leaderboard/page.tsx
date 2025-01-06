@@ -1,3 +1,4 @@
+import Board from "@/components/Leaderboard/Board";
 import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 
@@ -11,5 +12,12 @@ export default async function LeaderboardPage() {
     take: 100,
   });
 
-  return <></>;
+  return (
+    <div className="flex flex-row">
+      <Board />
+      <div className="">
+        <div></div>
+      </div>
+    </div>
+  );
 }

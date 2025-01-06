@@ -14,6 +14,7 @@ model Profile {
   username String @id
   wins Int @default(0)
   losses Int @default(0) 
+  public Boolean @default(false)
 
   @@index(username)
 }
