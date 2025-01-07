@@ -22,7 +22,7 @@ export default function Board({ data }: BoardProps) {
             ))}
           </>
         ) : (
-          <div>No players yet!</div>
+          <div className="text-black text-center">No players yet!</div>
         )}
       </div>
     </div>
