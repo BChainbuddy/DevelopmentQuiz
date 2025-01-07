@@ -26,6 +26,38 @@ export async function togglePublic(username: string, isPublic: boolean) {
   });
 }
 
-export async function addWin(username: string) {}
+export async function addWin(username: string) {
+  const data = await prisma.profile.findUnique({
+    where: {
+      username: username,
+    },
+  });
+  if (data) {
+    await prisma.profile.update({
+      where: {
+        username: username,
+      },
+      data: {
+        wins: data?.wins + 1,
+      },
+    });
+  }
+}
 
-export async function addLoss(username: string) {}
+export async function addLoss(username: string) {
+  const data = await prisma.profile.findUnique({
+    where: {
+      username: username,
+    },
+  });
+  if (data) {
+    await prisma.profile.update({
+      where: {
+        username: username,
+      },
+      data: {
+        losses: data?.losses + 1,
+      },
+    });
+  }
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import Quiz from "@/components/Quiz/Quiz";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function GamePage() {
   const [startGame, setStartGame] = useState(false);
@@ -63,9 +63,9 @@ export default function GamePage() {
             .toUpperCase()
         : "";
 
-      console.log("question: ", question);
-      console.log("Answers: ", answers);
-      console.log("Correct answer: ", correctAnswer);
+      // console.log("question: ", question);
+      // console.log("Answers: ", answers);
+      // console.log("Correct answer: ", correctAnswer);
       setQuestion(question);
       setAnswers(answers);
       setCorrectAnswer(correctAnswer);

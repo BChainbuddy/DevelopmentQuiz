@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Question from "./Question";
 import AnswerCard from "./AnswerCard";
+import { useSession } from "next-auth/react";
+import { addLoss, addWin } from "@/actions/actions";
 
 interface QuizProps {
   startGame: boolean;
@@ -26,8 +28,16 @@ export default function Quiz({
 
   const countdownIntervalRef = useRef<number | null>(null);
 
-  const selectAnswer = (choice: string) => {
+  const { data: session } = useSession();
+
+  const selectAnswer = async (choice: string) => {
     setSelectedAnswer(choice);
+
+    if (choice === correctAnswer) {
+      await addWin(session?.user?.email ?? "");
+    } else {
+      await addLoss(session?.user?.email ?? "");
+    }
 
     // Countdown to next round
     let timeLeft = 10;
