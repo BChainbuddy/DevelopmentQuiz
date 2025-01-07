@@ -11,7 +11,6 @@ export default function Home() {
             your go-to quiz app to sharpen your knowledge of web development
           </p>
         </div>
-        {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer> */}
         <div className="flex flex-col items-center justify-center gap-y-4">
           <p className="text-2xl">Start practicing today!</p>
           <LoginButton />

@@ -38,9 +38,9 @@ export default function Footer() {
           LinkedIn
         </a>
       </div>
-      {/* <p className="text-sm text-gray-400 mt-2">
-        &copy; {new Date().getFullYear()} YourSiteName. All rights reserved.
-      </p> */}
+      <p className="text-sm text-gray-400 mt-2">
+        &copy; {new Date().getFullYear()} DevQuiz. All rights reserved.
+      </p>
     </footer>
   );
 }

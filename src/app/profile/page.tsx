@@ -1,3 +1,4 @@
+import LogoutButton from "@/components/Profile/Logout";
 import Ratio from "@/components/Profile/Ratio";
 import Stat from "@/components/Profile/Stat";
 import prisma from "@/lib/db";
@@ -12,27 +13,21 @@ export default async function ProfilePage() {
     },
   });
 
-  // Mock data
-  const data = {
-    username: "jakapotokar50@gmail.com",
-    wins: 110,
-    losses: 100,
-    public: false,
-  };
-
   return (
     <div className="flex flex-col flex-1 w-full max-w-[90rem] mx-auto justify-evenly px-[5%] pb-[10vh] font-inter">
-      <div>
+      <div className="flex flex-col gap-y-4">
         <p className="text-2xl">
           Welcome {session?.user?.name}
           <span className="text-4xl ml-2">👋</span>
         </p>
+        <LogoutButton />
       </div>
       <div className="flex flex-row justify-around">
-        <Stat label="Wins" data={110} />
-        <Ratio data={data} />
-        <Stat label="Losses" data={100} />
+        <Stat label="Wins" data={profile?.wins} />
+        <Ratio data={profile} />
+        <Stat label="Losses" data={profile?.losses} />
       </div>
+      {/* <LogoutButton /> */}
     </div>
   );
 }
