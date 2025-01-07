@@ -1,19 +1,13 @@
+import { Profile } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 interface LeaderProps {
-  player: {
-    username: string;
-    wins: number;
-    losses: number;
-    public: boolean;
-  };
+  player: Profile;
   rank: number;
 }
 
 export default async function Leader({ player, rank }: LeaderProps) {
   const session = await getServerSession();
-
-  console.log(session?.user?.email, player.username);
 
   return (
     <div

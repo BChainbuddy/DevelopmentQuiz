@@ -17,6 +17,7 @@ export default async function ProfilePage() {
     username: "jakapotokar50@gmail.com",
     wins: 110,
     losses: 100,
+    public: false,
   };
 
   return (

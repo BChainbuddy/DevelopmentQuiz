@@ -1,5 +1,7 @@
+import { Profile } from "@prisma/client";
+
 interface RatioProps {
-  data: { username: string; wins: number; losses: number };
+  data: Profile;
 }
 
 export default function Ratio({ data }: RatioProps) {

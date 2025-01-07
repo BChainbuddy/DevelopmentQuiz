@@ -1,6 +1,12 @@
+import { Profile } from "@prisma/client";
 import Leader from "./Leader";
 
-export default function Board() {
+interface BoardProps {
+  loading: boolean;
+  data: Profile[];
+}
+
+export default function Board({ loading }: BoardProps) {
   //Mock data
   const data = [
     {
@@ -88,6 +94,11 @@ export default function Board() {
       public: true,
     },
   ];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="w-[50rem] h-[30rem] bg-white font-ibmPlexMono rounded-md overflow-hidden flex flex-col">
       <div className="w-full text-white flex flex-row items-center px-5 bg-[#818181] py-2 pr-[35px]">
