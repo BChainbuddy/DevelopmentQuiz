@@ -1,3 +1,4 @@
+import { createProfile } from "@/actions/actions";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -9,6 +10,15 @@ export const authOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  events: {
+    async signIn(message: any) {
+      try {
+        await createProfile(message.user.email);
+      } catch (error) {
+        console.error("Error creating profile:", error);
+      }
+    },
+  },
 };
 
 export const handler = NextAuth(authOptions);
