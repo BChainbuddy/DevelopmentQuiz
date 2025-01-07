@@ -2,36 +2,39 @@
 
 import Board from "@/components/Leaderboard/Board";
 import ToggleAccount from "@/components/Leaderboard/ToggleAccount";
-import prisma from "@/lib/db";
+import { Profile } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-export default async function LeaderboardPage() {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function LeaderboardPage() {
+  const [data, setData] = useState<Profile[]>([]);
+
+  const { data: session } = useSession();
 
   const getData = async () => {
-    setLoading(true);
-    const response = await prisma.profile.findMany({
-      orderBy: {
-        wins: "desc",
-      },
-      take: 100,
-    });
+    console.log("loading data...");
+    const response = await fetch("/api/users");
 
-    setData(response);
-    setLoading(false);
+    if (!response.ok) {
+      throw new Error("Error fetching users");
+    }
+
+    const data = await response.json();
+    console.log(data.data);
+    setData(data.data);
+    console.log("Data ready!");
   };
 
   useEffect(() => {
-    if (!loading) {
-        getData();
+    if (session) {
+      getData();
     }
-  }, [loading]);
+  }, [session]);
 
   return (
     <div className="flex flex-row my-auto h-fit">
-      <Board data={data} loading={loading} />
-      <ToggleAccount loading={loading} getData={getData}   />
+      <Board data={data} />
+      <ToggleAccount getData={getData} />
     </div>
   );
 }
