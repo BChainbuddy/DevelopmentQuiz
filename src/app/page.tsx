@@ -1,18 +1,23 @@
-"use client";
-import { signIn, signOut } from "next-auth/react";
+import Footer from "@/components/LandingPage/Footer";
+import LoginButton from "@/components/LandingPage/LoginButton";
 
 export default function Home() {
   return (
-    <div className="">
-      {/* <main></main> */}
-      {/* <p className="text-6xl">HELLO WORLD!</p> */}
-      {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer> */}
-      <button className="" onClick={() => signIn()}>
-        Sign in
-      </button>
-      <button className="" onClick={() => signOut()}>
-        Sign out
-      </button>
-    </div>
+    <>
+      <div className="font-ibmPlexMono flex flex-col items-center flex-1 justify-evenly">
+        <div className="flex flex-col items-center justify-center gap-y-6">
+          <p className="text-7xl text-center text-white">Development Quiz</p>
+          <p className="text-xl text-center w-[30rem] text-[#FFFFFF95]">
+            your go-to quiz app to sharpen your knowledge of web development
+          </p>
+        </div>
+        {/* <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer> */}
+        <div className="flex flex-col items-center justify-center gap-y-4">
+          <p className="text-2xl">Start practicing today!</p>
+          <LoginButton />
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 }

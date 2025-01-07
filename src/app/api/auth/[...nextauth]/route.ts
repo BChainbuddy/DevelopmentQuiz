@@ -17,6 +17,7 @@ export const authOptions = {
       } catch (error) {
         console.error("Error creating profile:", error);
       }
+      
     },
   },
 };
