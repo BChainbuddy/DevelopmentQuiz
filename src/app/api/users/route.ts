@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const data = await prisma.profile.findMany({
@@ -12,7 +14,6 @@ export async function GET(req: Request) {
       },
       take: 100,
     });
-
     return NextResponse.json({ data });
   } catch (error) {
     console.error("Error fetching players:", error);
