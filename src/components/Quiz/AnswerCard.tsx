@@ -14,7 +14,7 @@ export default function AnswerCard({
 }: AnswerCardProps) {
   return (
     <div
-      className={`lg:max-w-[25rem] w-full aspect-[9/10] text-black cursor-pointer rounded-xl items-center flex flex-col transition-all duration-500 ease-out ${
+      className={`md:max-w-[25rem] max-w-[10rem] w-full lg:aspect-[9/10] md:aspect-[8/10] aspect-[3/3] text-black cursor-pointer rounded-xl items-center flex flex-col transition-all duration-500 ease-out ${
         selectedAnswer && choice === correctAnswer
           ? "bg-green-500"
           : selectedAnswer
@@ -23,10 +23,12 @@ export default function AnswerCard({
       }`}
       onClick={() => selectAnswer(choice)}
     >
-      <p className="lg:text-xl md:text-lg mt-[15%]">{choice}</p>
-      <p className="lg:text-lg md:text-base w-[90%] mt-[20%] text-center">
-        {answer}
+      <p className="lg:text-xl md:text-lg text-base md:mt-[8%] mt-[5%]">
+        {choice}
       </p>
+      <div className="lg:text-lg md:text-base text-sm w-[90%] text-center flex-1 flex items-center justify-center">
+        <p>{answer}</p>
+      </div>
     </div>
   );
 }

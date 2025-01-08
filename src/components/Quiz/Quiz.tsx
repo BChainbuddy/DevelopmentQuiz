@@ -70,7 +70,7 @@ export default function Quiz({
   return (
     <div className="w-full flex-1 h-full flex flex-col font-ibmPlexMono items-center justify-evenly">
       <Question question={question} />
-      <div className="flex flex-row justify-between w-full items-center gap-[15%]">
+      <div className="flex md:flex-row flex-col justify-between w-full items-center lg:gap-x-[15%] md:gap-x-[5%] md:gap-y-0 gap-y-[2vh]">
         {answers && (
           <>
             {answers.map((item, i) => (
