@@ -56,22 +56,24 @@ export default function ToggleAccount({ getData }: ToggleAccountProps) {
   }, [isPublic]);
 
   return (
-    <div className="flex flex-col font-inter items-center flex-1">
-      <div className="text-xl">Public Account</div>
+    <div className="flex flex-col font-inter items-center flex-1 order-1 md:order-2">
+      <div className="md:text-xl text-lg">Public Account</div>
       <button
-        className="h-[40px] w-[100px] bg-[#D9D9D9] rounded-full mt-4 relative"
+        className="md:h-[40px] md:w-[100px] w-[75px] h-[30px] bg-[#D9D9D9] rounded-full mt-4 relative"
         onClick={handleToggle}
       >
         <div
-          className={`rounded-full h-[38px] w-[38px] absolute top-[1px] transition-all duration-500 ${
+          className={`rounded-full md:h-[38px] md:w-[38px] h-[28px] w-[28px] absolute top-[1px] transition-all duration-500 ${
             isPublic
-              ? "bg-green-500 translate-x-[60px]"
+              ? "bg-green-500 md:translate-x-[60px] translate-x-[45px]"
               : "bg-red-500 translate-x-[2px]"
           }`}
         ></div>
       </button>
-      <p className="border-b-2 text-xl mt-16">YOUR RANK</p>
-      <p className="text-4xl">{rank ? rank : ""}</p>
+      <p className="border-b-2 md:text-xl text-lg md:mt-16 mt-8">YOUR RANK</p>
+      <p className="md:text-4xl text-2xl md:h-[36px] h-[24px]">
+        {rank ? rank : ""}
+      </p>
     </div>
   );
 }

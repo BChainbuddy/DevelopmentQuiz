@@ -83,3 +83,13 @@ body {
 .open .hamburger-bottom {
   transform: translateY(-50%) rotate(-45deg);
 }
+
+@media (max-width: 767px) {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}

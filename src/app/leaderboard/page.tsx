@@ -20,7 +20,6 @@ export default function LeaderboardPage() {
     }
 
     const data = await response.json();
-    console.log(data.data);
     setData(data.data);
     console.log("Data ready!");
   };
@@ -32,9 +31,9 @@ export default function LeaderboardPage() {
   }, [session]);
 
   return (
-    <div className="flex flex-row my-auto h-fit">
-      <Board data={data} />
+    <div className="flex md:flex-row flex-col my-auto h-fit max-w-[90rem] mx-auto w-full md:gap-y-0 gap-y-12">
       <ToggleAccount getData={getData} />
+      <Board data={data} />
     </div>
   );
 }
