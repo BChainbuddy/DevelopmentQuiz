@@ -77,9 +77,19 @@ export default function GamePage() {
   }
 
   return (
-    <div className="flex flex-col flex-1 w-full max-w-[90rem] mx-auto">
+    <div className="flex flex-1 w-full max-w-[90rem] mx-auto">
       {!startGame ? (
-        <div className="flex flex-1 justify-center items-center">
+        <div className="flex flex-col flex-1 justify-center items-center font-ibmPlexMono gap-y-[10vh]">
+          <div className="flex flex-col items-center justify-center gap-y-4">
+            <p className="text-2xl text-white">How the games works?</p>
+            <p className="w-[40rem] text-[#FFFFFF99] text-center">
+              Each game has 10 rounds, the questions have 3 multiple choice
+              questions and go from easy to hard, the goal is to get a score of
+              more than 60%, if successful the user gets rewarded with a win, on
+              the other hand if the score is less than 60% the user gets a loss.
+              When you are ready click on start game, good luck!
+            </p>
+          </div>
           <button
             className="text-black rounded-xl bg-white p-2 cursor-pointer"
             onClick={handleNewGame}
