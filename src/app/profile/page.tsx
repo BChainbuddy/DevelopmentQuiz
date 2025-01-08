@@ -22,7 +22,7 @@ export default async function ProfilePage() {
         </p>
         <LogoutButton />
       </div>
-      <div className="flex flex-row justify-around">
+      <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center gap-y-[10vh]">
         <Stat label="Wins" data={profile?.wins} />
         <Ratio data={profile} />
         <Stat label="Losses" data={profile?.losses} />
