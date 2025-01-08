@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="text-white py-4 text-center text-sm">
+    <footer className="text-white md:py-4 py-2 text-center text-sm">
       <p>
         Built by{" "}
         <a
@@ -12,7 +12,7 @@ export default function Footer() {
           bchainbuddy (Jaka Potokar)
         </a>
       </p>
-      <div className="mt-2">
+      <div className="mt-2 md:block hidden">
         <a
           href="https://github.com/BChainbuddy"
           target="_blank"
