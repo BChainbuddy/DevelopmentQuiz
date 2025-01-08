@@ -87,10 +87,12 @@ export default function Quiz({
         )}
       </div>
       <div className="h-[6vh] mx-auto flex items-center justify-center flex-col">
-        <p>{countdown ? `Starting next game in ${countdown}` : " "}</p>
+        <p className="md:text-base text-sm text-center">
+          {countdown ? `Starting next game in ${countdown}` : " "}
+        </p>
         {countdown ? (
           <button
-            className="slideIn bg-white opacity-90 hover:opacity-100 text-black py-1 px-3 rounded-lg mt-2 text-sm transition-all duration-300 ease-out"
+            className="slideIn bg-white opacity-90 hover:opacity-100 text-black md:py-1 md:px-3 py-0.5 px-2 rounded-lg md:mt-2 mt-1.5 md:text-sm text-xs transition-all duration-300 ease-out"
             onClick={handleLeaveGame}
           >
             LEAVE GAME

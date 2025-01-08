@@ -14,7 +14,7 @@ export default function AnswerCard({
 }: AnswerCardProps) {
   return (
     <div
-      className={`md:max-w-[25rem] max-w-[10rem] w-full lg:aspect-[9/10] md:aspect-[8/10] aspect-[3/3] text-black cursor-pointer rounded-xl items-center flex flex-col transition-all duration-500 ease-out ${
+      className={`md:max-w-[25rem] max-w-[10rem] w-full lg:aspect-[9/10] md:aspect-[8/10] min-w-[5rem] text-black cursor-pointer rounded-xl items-center flex flex-col transition-all duration-500 ease-out md:pb-0 pb-[0.5rem] ${
         selectedAnswer && choice === correctAnswer
           ? "bg-green-500"
           : selectedAnswer

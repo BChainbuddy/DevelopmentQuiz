@@ -9,7 +9,7 @@ export default function NavOptions() {
   const separatorClass = "lg:text-xl md:text-lg";
 
   return (
-    <div className="flex flex-row justify-center items-end lg:space-x-2 md:space-x-1 font-inter">
+    <div className="md:flex hidden flex-row justify-center items-end lg:space-x-2 md:space-x-1 font-inter">
       {pathname !== "/" && (
         <>
           <NavOption href="/game" name="Game" />

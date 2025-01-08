@@ -36,3 +36,50 @@ body {
     transform: translateY(0);
   }
 }
+
+.hamburger {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  /* No need for extra positioning here if we rely on flex placement from the parent */
+  transition: all 0.25s;
+}
+
+/* Common line styles */
+.hamburger-top,
+.hamburger-middle,
+.hamburger-bottom {
+  position: absolute;
+  left: 0;
+  width: 24px;
+  height: 2px;
+  background: black;
+  transform-origin: center;
+  transition: all 0.5s;
+  top: 50%;
+}
+
+.hamburger-top {
+  transform: translateY(calc(-50% - 6px));
+}
+
+.hamburger-middle {
+  transform: translateY(-50%);
+}
+
+.hamburger-bottom {
+  transform: translateY(calc(-50% + 6px));
+}
+
+.open .hamburger-top {
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.open .hamburger-middle {
+  opacity: 0;
+}
+
+.open .hamburger-bottom {
+  transform: translateY(-50%) rotate(-45deg);
+}
