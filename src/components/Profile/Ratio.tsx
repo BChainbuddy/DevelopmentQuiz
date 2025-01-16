@@ -11,7 +11,11 @@ export default function Ratio({ data }: RatioProps) {
         WIN/LOSS RATIO
       </p>
       <p className="lg:text-7xl md:text-6xl text-4xl text-center font-bold">
-        {data?.wins && data?.losses ? (data.wins / data.losses).toFixed(2) : 0}
+        {data?.wins && data?.losses
+          ? (data.wins / data.losses).toFixed(2)
+          : data?.wins
+          ? data.wins
+          : 0}
       </p>
     </div>
   );
