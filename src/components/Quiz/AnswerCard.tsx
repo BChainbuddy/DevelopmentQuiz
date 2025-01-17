@@ -19,7 +19,7 @@ export default function AnswerCard({
           ? "bg-green-500"
           : selectedAnswer
           ? "bg-red-500"
-          : "bg-white opacity-90"
+          : "bg-white opacity-90 answerCard"
       }`}
       onClick={() => selectAnswer(choice)}
     >

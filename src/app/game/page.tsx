@@ -1,6 +1,7 @@
 "use client";
 
 import Quiz from "@/components/Quiz/Quiz";
+import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 
 export default function GamePage() {
@@ -105,7 +106,9 @@ export default function GamePage() {
           </button>
         </div>
       ) : loadingGame ? (
-        <div>Loading game...</div>
+        <div className="flex w-full flex-1 items-center justify-center">
+          <CircleLoading className="lg:w-10 lg:h-10 md:w-8 md:h-8 h-5 w-5 fill-[#d9d9d9]" />
+        </div>
       ) : (
         <Quiz
           startGame={startGame}
