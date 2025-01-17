@@ -17,7 +17,7 @@ interface ChatGPTResponse {
   choices: ChatGPTChoice[];
 }
 
-export async function fetchQuestions() {
+export async function fetchQuestions(prompt: string) {
   const apiUrl = "https://api.openai.com/v1/chat/completions";
 
   const headers = {
@@ -34,8 +34,7 @@ export async function fetchQuestions() {
     messages: [
       {
         role: "system",
-        content:
-          "You are a helpful software development quiz generator. Provide unique specific easy to hard question from any topic in the field of web development field with exactly three multiple-choice answers, the question should be very technical as is targeted towards developers looking for a job.",
+        content: prompt,
       },
       {
         role: "user",
@@ -51,8 +50,10 @@ export async function fetchQuestions() {
       },
     ],
     max_tokens: 500, // Increased to ensure response completeness
-    temperature: 0.9, // Lowered for more deterministic outputs
-    n: 1, // Number of responses to generate
+    temperature: 1.2, // randomness
+    presence_penalty: 0.5, // encourages new topics
+    frequency_penalty: 0.5, // discourages repetition
+    n: 1,
   };
 
   try {
@@ -65,4 +66,16 @@ export async function fetchQuestions() {
     console.error("Error fetching questions:", error);
     throw error;
   }
+}
+
+export function createSystemPrompt(topic: string, subtopics: string[]): string {
+  return `
+You are a helpful software development quiz generator. 
+Generate ONE unique and very specific question in the field of ${topic}. 
+It should range from easy to advanced. 
+Choose from a variety of subtopics such as: ${subtopics.join(", ")}.
+Avoid repeating the same question or focusing solely on the basics. 
+Ensure exactly THREE multiple-choice answers. 
+These questions should be technical, targeted at developers applying for jobs.
+  `.trim();
 }

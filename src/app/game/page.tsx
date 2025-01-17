@@ -3,6 +3,7 @@
 import Quiz from "@/components/Quiz/Quiz";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
+import { categories } from "@/data/categories";
 
 export default function GamePage() {
   const [startGame, setStartGame] = useState(false);
@@ -11,6 +12,8 @@ export default function GamePage() {
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState("");
+
+  const [category, setCategory] = useState(categories[0]);
 
   const handleNewGame = () => {
     setStartGame(true);
@@ -21,7 +24,7 @@ export default function GamePage() {
     setLoadingGame(true);
 
     try {
-      const response = await fetch("/api/getQuestions");
+      const response = await fetch(`/api/getQuestions/${category.prompt}`);
       const { data } = await response.json();
       const message = data.choices[0].message.content;
       const lines = message
@@ -97,6 +100,28 @@ export default function GamePage() {
               otherwise the user gets rewarded with a loss. When you are ready
               click on start game, good luck!
             </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-y-6">
+            <p className="text-center lg:text-xl md:text-lg text-base">
+              Choose the field of the quiz
+            </p>
+            <div className="lg:w-[600px] md:w-[400px] mx-auto flex flex-wrap justify-center items-center gap-2">
+              {categories.map((item, i) => (
+                <button
+                  onClick={() => {
+                    setCategory(item);
+                  }}
+                  className={`lg:py-2 lg:px-4 md:py-1.5 md:px-2.5 py-1 px-2 lg:text-base md:text-sm text-xs bg-white text-black rounded-3xl text-center w-fit transition-all duration-300 ease-out cursor-pointer inline-block ${
+                    category === item
+                      ? "opacity-100"
+                      : "opacity-80 hover:opacity-100"
+                  }`}
+                  key={i}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
           </div>
           <button
             className="text-black rounded-xl bg-white md:p-2 p-1.5 cursor-pointer md:text-base text-sm"
