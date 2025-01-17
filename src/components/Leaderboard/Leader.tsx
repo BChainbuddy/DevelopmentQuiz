@@ -31,6 +31,8 @@ export default function Leader({ player, rank }: LeaderProps) {
       <p className="md:w-[17.5%] w-[20%]">
         {player.wins && player.losses
           ? formatNumber(player.wins / player.losses)
+          : player.wins
+          ? player.wins
           : 0}
       </p>
     </div>

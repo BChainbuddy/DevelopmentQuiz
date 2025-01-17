@@ -1,0 +1,45 @@
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="32" fill="#000" />
+  
+  <!-- Curly bracket (left) -->
+  <path
+    d="M22 18 C20 22, 20 26, 22 28
+         20 30, 20 34, 22 38
+         20 40, 20 44, 22 46"
+    stroke="#d9d9d9"
+    stroke-width="3"
+    fill="none"
+    stroke-linecap="round"
+  />
+
+  <!-- Question mark -->
+  <text
+    x="32"
+    y="42"
+    text-anchor="middle"
+    font-family="Arial, sans-serif"
+    font-size="24"
+    fill="#d9d9d9"
+    font-weight="bold"
+  >
+    ?
+  </text>
+  
+  <!-- Curly bracket (right) -->
+  <path
+    d="M42 18 C44 22, 44 26, 42 28
+         44 30, 44 34, 42 38
+         44 40, 44 44, 42 46"
+    stroke="#d9d9d9"
+    stroke-width="3"
+    fill="none"
+    stroke-linecap="round"
+  />
+</svg>
