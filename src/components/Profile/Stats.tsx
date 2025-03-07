@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Stat from "./Stat";
 import Ratio from "./Ratio";
-import { categories } from "@/data/categories";
+import CategoryDropdown from "./CategoryDropdown";
 
 export interface StatsData {
   wins: number;
@@ -35,47 +35,18 @@ export default function Stats({
   return (
     <>
       <div>
-        <div></div>
-      </div>
-      <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center gap-y-[10vh]">
-        <Stat label="Wins" data={stats.wins} />
-        <Ratio data={stats} />
-        <Stat label="Losses" data={stats.losses} />
+        <div className="flex flex-col justify-center w-full items-center gap-y-2">
+          <p className="lg:text-2xl md:text-xl text-base font-ibmPlexMono">
+            SELECT CATEGORY
+          </p>
+          <CategoryDropdown setCategory={setCategory} />
+        </div>
+        <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center gap-y-[10vh]">
+          <Stat label="Wins" data={stats.wins} />
+          <Ratio data={stats} />
+          <Stat label="Losses" data={stats.losses} />
+        </div>
       </div>
     </>
   );
 }
-
-const CategoryDropdown = ({
-  setCategory,
-}: {
-  setCategory: (category: string) => void;
-}) => {
-  return (
-    <div>
-      <select className="w-40 h-10 bg-gray-200 rounded-md">
-        {categories.map((category, i) => (
-          <CategoryOption
-            key={i}
-            category={category.name}
-            setCategory={setCategory}
-          />
-        ))}
-      </select>
-    </div>
-  );
-};
-
-const CategoryOption = ({
-  category,
-  setCategory,
-}: {
-  category: string;
-  setCategory: (category: string) => void;
-}) => {
-  return (
-    <option value={category} onSelect={() => setCategory(category)}>
-      {category}
-    </option>
-  );
-};

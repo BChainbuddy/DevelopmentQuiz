@@ -24,7 +24,7 @@ export async function GET(
       );
     }
 
-    if (category && category !== "all") {
+    if (category && category !== "All") {
       const record = await prisma.userGames.findUnique({
         where: {
           userId_categoryName: { userId: username, categoryName: category },
