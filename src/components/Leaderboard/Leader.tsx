@@ -27,14 +27,14 @@ export default function Leader({ player, rank }: LeaderProps) {
       <p className="md:w-[52.5%] w-[40%] lg:text-base md:text-xs text-[6px] overflow-x-hidden">
         {player.username}
       </p>
-      <p className="md:w-[15%] w-[20%]">{player.wins}</p>
+      {/* <p className="md:w-[15%] w-[20%]">{player.wins}</p>
       <p className="md:w-[17.5%] w-[20%]">
         {player.wins && player.losses
           ? formatNumber(player.wins / player.losses)
           : player.wins
           ? player.wins
-          : 0}
-      </p>
+          : 0} */}
+      {/* </p> */}
     </div>
   );
 }

@@ -9,9 +9,9 @@ export async function GET(req: Request) {
       where: {
         public: true,
       },
-      orderBy: {
-        wins: "desc",
-      },
+      // orderBy: {
+      //   wins: "desc",
+      // },
       take: 100,
     });
     return NextResponse.json({ data });

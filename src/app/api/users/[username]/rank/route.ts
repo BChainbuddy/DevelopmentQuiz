@@ -27,9 +27,9 @@ export async function GET(
       where: {
         public: true,
       },
-      orderBy: {
-        wins: "desc",
-      },
+      // orderBy: {
+      //   wins: "desc",
+      // },
     });
 
     let rank = data.findIndex((user) => user.username === username);
