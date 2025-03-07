@@ -13,7 +13,7 @@ export default function LoginButton() {
       </button>
       <button
         onClick={() => signIn("credentials", { callbackUrl: "/game" })}
-        className="lg:text-lg md:text-base text-sm text-white hover:text-white/60 transition-colors duration-300 ease-in-out border border-white rounded-2xl px-2 py-0.5"
+        className="lg:text-lg md:text-base text-sm text-white hover:text-white/60 transition-colors duration-300 ease-in-out border border-white rounded-2xl md:px-2 px-1.5 py-0.5"
       >
         Continue as Guest
       </button>
