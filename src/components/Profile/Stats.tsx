@@ -24,10 +24,7 @@ export default function Stats({
   useEffect(() => {
     if (!profile) return;
 
-    const url =
-      category === "all"
-        ? `/api/usergames?username=${profile.username}`
-        : `/api/usergames?username=${profile.username}&category=${category}`;
+    const url = `/api/usergames/${profile.username}/${category}`;
 
     fetch(url, { cache: "no-store" })
       .then((res) => res.json())
