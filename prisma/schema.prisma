@@ -16,10 +16,17 @@ datasource db {
 }
 
 model Profile {
-  username String @id
-  wins Int @default(0)
-  losses Int @default(0) 
-  public Boolean @default(false)
+  username  String      @id
+  public    Boolean     @default(false)
+  userGames UserGames[]
+}
 
-  @@index(username)
+model UserGames {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  categoryName String   
+  wins         Int      @default(0)
+  losses       Int      @default(0)
+
+  profile      Profile  @relation(fields: [userId], references: [username])
 }
