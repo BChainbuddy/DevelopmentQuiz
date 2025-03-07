@@ -5,10 +5,12 @@ import { categories } from "@/data/categories";
 
 interface CategoryDropdownProps {
   setCategory: (category: string) => void;
+  className?: string;
 }
 
 export default function CategoryDropdown({
   setCategory,
+  className,
 }: CategoryDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -35,7 +37,10 @@ export default function CategoryDropdown({
   }, []);
 
   return (
-    <div className="relative md:w-60 w-32" ref={dropdownRef}>
+    <div
+      className={`relative ${className ? className : "md:w-60 w-32"}`}
+      ref={dropdownRef}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full h-10 px-3 py-2 bg-slate-800 text-white border border-slate-600 rounded-md flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-300"

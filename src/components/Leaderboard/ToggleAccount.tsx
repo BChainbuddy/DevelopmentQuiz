@@ -3,12 +3,17 @@
 import { togglePublic } from "@/actions/actions";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import CategoryDropdown from "../Profile/CategoryDropdown";
 
 interface ToggleAccountProps {
   getData: () => void;
+  setCategory: (category: string) => void;
 }
 
-export default function ToggleAccount({ getData }: ToggleAccountProps) {
+export default function ToggleAccount({
+  getData,
+  setCategory,
+}: ToggleAccountProps) {
   const [isPublic, setIsPublic] = useState<boolean>();
   const [rank, setRank] = useState<number>(0);
 
@@ -56,8 +61,12 @@ export default function ToggleAccount({ getData }: ToggleAccountProps) {
   }, [isPublic]);
 
   return (
-    <div className="flex flex-col font-inter items-center flex-1 order-1 md:order-2">
-      <div className="md:text-xl text-lg">Public Account</div>
+    <div className="flex flex-col font-inter items-center flex-1 md:order-2 order-1">
+      <CategoryDropdown
+        className="lg:w-48 md:w-48 w-36"
+        setCategory={setCategory}
+      />
+      <div className="md:text-xl text-lg mt-8">Public Account</div>
       <button
         className="md:h-[40px] md:w-[100px] w-[75px] h-[30px] bg-[#D9D9D9] rounded-full mt-4 relative"
         onClick={handleToggle}

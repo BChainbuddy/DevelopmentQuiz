@@ -18,7 +18,7 @@ export default function Stats({
     public: boolean;
   } | null;
 }) {
-  const [category, setCategory] = useState<string>("all");
+  const [category, setCategory] = useState<string>("All");
   const [stats, setStats] = useState<StatsData>({ wins: 0, losses: 0 });
 
   useEffect(() => {
@@ -26,6 +26,7 @@ export default function Stats({
 
     const url = `/api/usergames/${profile.username}/${category}`;
 
+    console.log("Fetching stats from:", url);
     fetch(url, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => setStats(data))
