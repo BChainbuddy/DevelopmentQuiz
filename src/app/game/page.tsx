@@ -150,6 +150,7 @@ export default function GamePage() {
           question={question}
           answers={answers}
           correctAnswer={correctAnswer}
+          category={category.name}
         />
       )}
     </div>

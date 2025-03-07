@@ -26,38 +26,32 @@ export async function togglePublic(username: string, isPublic: boolean) {
   });
 }
 
-export async function addWin(username: string) {
-  const data = await prisma.profile.findUnique({
+export async function addWin(username: string, category: string) {
+  await prisma.userGames.upsert({
     where: {
-      username: username,
+      userId_categoryName: { userId: username, categoryName: category },
+    },
+    update: { wins: { increment: 1 } },
+    create: {
+      userId: username,
+      categoryName: category,
+      wins: 1,
+      losses: 0,
     },
   });
-  if (data) {
-    await prisma.profile.update({
-      where: {
-        username: username,
-      },
-      data: {
-        wins: data?.wins + 1,
-      },
-    });
-  }
 }
 
-export async function addLoss(username: string) {
-  const data = await prisma.profile.findUnique({
+export async function addLoss(username: string, category: string) {
+  await prisma.userGames.upsert({
     where: {
-      username: username,
+      userId_categoryName: { userId: username, categoryName: category },
+    },
+    update: { losses: { increment: 1 } },
+    create: {
+      userId: username,
+      categoryName: category,
+      wins: 0,
+      losses: 1,
     },
   });
-  if (data) {
-    await prisma.profile.update({
-      where: {
-        username: username,
-      },
-      data: {
-        losses: data?.losses + 1,
-      },
-    });
-  }
 }

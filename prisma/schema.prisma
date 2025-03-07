@@ -29,4 +29,5 @@ model UserGames {
   losses       Int      @default(0)
 
   profile      Profile  @relation(fields: [userId], references: [username])
+  @@unique([userId, categoryName], name: "userId_categoryName")
 }

@@ -13,6 +13,7 @@ interface QuizProps {
   question: string;
   answers: { choice: string; answer: string }[];
   correctAnswer: string;
+  category: string;
 }
 
 export default function Quiz({
@@ -22,6 +23,7 @@ export default function Quiz({
   question,
   answers,
   correctAnswer,
+  category,
 }: QuizProps) {
   const [countdown, setCountdown] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -34,9 +36,9 @@ export default function Quiz({
     setSelectedAnswer(choice);
 
     if (choice === correctAnswer) {
-      await addWin(session?.user?.email ?? "");
+      await addWin(session?.user?.email ?? "", category);
     } else {
-      await addLoss(session?.user?.email ?? "");
+      await addLoss(session?.user?.email ?? "", category);
     }
 
     // Countdown to next round
