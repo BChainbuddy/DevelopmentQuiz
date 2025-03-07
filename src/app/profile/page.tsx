@@ -1,6 +1,5 @@
 import LogoutButton from "@/components/Profile/Logout";
-import Ratio from "@/components/Profile/Ratio";
-import Stat from "@/components/Profile/Stat";
+import Stats from "@/components/Profile/Stats";
 import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 
@@ -22,12 +21,7 @@ export default async function ProfilePage() {
         </p>
         <LogoutButton />
       </div>
-      <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center gap-y-[10vh]">
-        <Stat label="Wins" data={profile?.wins} />
-        <Ratio data={profile} />
-        <Stat label="Losses" data={profile?.losses} />
-      </div>
-      {/* <LogoutButton /> */}
+      <Stats profile={profile} />
     </div>
   );
 }
