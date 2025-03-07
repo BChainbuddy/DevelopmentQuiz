@@ -3,12 +3,14 @@
 import prisma from "@/lib/db";
 
 export async function createProfile(username: string) {
+  console.log("Creating profile for", username);
   const profile = await prisma.profile.findUnique({
     where: {
       username: username,
     },
   });
   if (!profile) {
+    console.log("Profile not found, creating...");
     await prisma.profile.create({
       data: {
         username,

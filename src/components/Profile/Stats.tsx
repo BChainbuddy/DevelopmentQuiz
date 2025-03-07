@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Stat from "./Stat";
 import Ratio from "./Ratio";
+import { categories } from "@/data/categories";
 
 export interface StatsData {
   wins: number;
@@ -48,17 +49,36 @@ export default function Stats({
   );
 }
 
-const CategoryDropdown = () => {
+const CategoryDropdown = ({
+  setCategory,
+}: {
+  setCategory: (category: string) => void;
+}) => {
   return (
     <div>
       <select className="w-40 h-10 bg-gray-200 rounded-md">
-        <option value="all">All</option>
-        <option value="html">HTML</option>
-        <option value="css">CSS</option>
-        <option value="js">JavaScript</option>
-        <option value="react">React</option>
-        <option value="node">Node</option>
+        {categories.map((category, i) => (
+          <CategoryOption
+            key={i}
+            category={category.name}
+            setCategory={setCategory}
+          />
+        ))}
       </select>
     </div>
+  );
+};
+
+const CategoryOption = ({
+  category,
+  setCategory,
+}: {
+  category: string;
+  setCategory: (category: string) => void;
+}) => {
+  return (
+    <option value={category} onSelect={() => setCategory(category)}>
+      {category}
+    </option>
   );
 };

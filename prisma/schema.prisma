@@ -19,6 +19,8 @@ model Profile {
   username  String      @id
   public    Boolean     @default(false)
   userGames UserGames[]
+  
+  @@index(username)
 }
 
 model UserGames {
