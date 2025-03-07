@@ -68,9 +68,9 @@ export default function Quiz({
   };
 
   return (
-    <div className="w-full flex-1 h-full flex flex-col font-ibmPlexMono items-center justify-evenly">
+    <div className="w-full flex-1 h-full flex flex-col font-ibmPlexMono items-center md:justify-evenly pt-3 md:pt-0">
       <Question question={question} />
-      <div className="flex md:flex-row flex-col justify-between w-full items-center lg:gap-x-[15%] md:gap-x-[5%] md:gap-y-0 gap-y-[2vh]">
+      <div className="flex md:flex-row flex-col justify-between w-full items-center lg:gap-x-[15%] md:gap-x-[5%] md:gap-y-0 gap-y-[2vh] mt-6 md:mt-0">
         {answers && (
           <>
             {answers.map((item, i) => (
@@ -86,7 +86,7 @@ export default function Quiz({
           </>
         )}
       </div>
-      <div className="h-[6vh] mx-auto flex items-center justify-center flex-col">
+      <div className="h-[6vh] mx-auto flex items-center justify-center flex-col md:mt-0 mt-6">
         <p className="md:text-base text-sm text-center">
           {countdown ? `Starting next game in ${countdown}` : " "}
         </p>

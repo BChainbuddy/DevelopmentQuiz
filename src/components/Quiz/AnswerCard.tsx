@@ -23,10 +23,10 @@ export default function AnswerCard({
       }`}
       onClick={() => selectAnswer(choice)}
     >
-      <p className="lg:text-xl md:text-lg text-base md:mt-[8%] mt-[5%]">
+      <p className="lg:text-xl md:text-lg text-sm md:mt-[8%] mt-[5%]">
         {choice}
       </p>
-      <div className="lg:text-lg md:text-base text-sm w-[90%] text-center flex-1 flex items-center justify-center">
+      <div className="lg:text-lg md:text-base text-xs w-[90%] text-center flex-1 flex items-center justify-center">
         <p>{answer}</p>
       </div>
     </div>
