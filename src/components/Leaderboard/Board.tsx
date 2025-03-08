@@ -1,8 +1,8 @@
-import { Profile } from "@prisma/client";
+import { AggregatedUserGames } from "@/app/leaderboard/page";
 import Leader from "./Leader";
 
 interface BoardProps {
-  data: Profile[];
+  data: AggregatedUserGames[];
 }
 
 export default function Board({ data }: BoardProps) {

@@ -8,11 +8,13 @@ import CategoryDropdown from "../Profile/CategoryDropdown";
 interface ToggleAccountProps {
   getData: () => void;
   setCategory: (category: string) => void;
+  category: string;
 }
 
 export default function ToggleAccount({
   getData,
   setCategory,
+  category,
 }: ToggleAccountProps) {
   const [isPublic, setIsPublic] = useState<boolean>();
   const [rank, setRank] = useState<number>(0);
@@ -29,7 +31,7 @@ export default function ToggleAccount({
   };
 
   const getUserData = async () => {
-    const response = await fetch(`/api/users/${session?.user?.email}`);
+    const response = await fetch(`/api/user/${session?.user?.email}`);
     if (!response.ok) {
       throw new Error("Error fetching user data");
     }
@@ -39,7 +41,9 @@ export default function ToggleAccount({
   };
 
   const getRank = async () => {
-    const response = await fetch(`/api/users/${session?.user?.email}/rank`);
+    const response = await fetch(
+      `/api/user/${session?.user?.email}/${category}/rank`
+    );
     if (!response.ok) {
       throw new Error("Error fetching user rank");
     }
@@ -58,7 +62,7 @@ export default function ToggleAccount({
     if (isPublic) {
       getRank();
     }
-  }, [isPublic]);
+  }, [isPublic, category]);
 
   return (
     <div className="flex flex-col font-inter items-center flex-1 md:order-2 order-1">

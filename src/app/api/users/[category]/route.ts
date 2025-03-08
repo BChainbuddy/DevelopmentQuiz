@@ -12,13 +12,14 @@ export async function GET(
     let data;
 
     if (category && category.toLowerCase() !== "all") {
-      data = await prisma.userGames.findMany({
+      data = await prisma.userGames.groupBy({
+        by: ["userId"],
         where: {
           categoryName: category,
           profile: { public: true },
         },
-        orderBy: { wins: "desc" },
-        include: { profile: true },
+        _sum: { wins: true, losses: true },
+        orderBy: { _sum: { wins: "desc" } },
         take: 100,
       });
     } else {
