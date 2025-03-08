@@ -2,7 +2,6 @@
 
 import Board from "@/components/Leaderboard/Board";
 import ToggleAccount from "@/components/Leaderboard/ToggleAccount";
-import CategoryDropdown from "@/components/Profile/CategoryDropdown";
 import { Profile } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
