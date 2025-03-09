@@ -122,7 +122,7 @@ export default function GamePage() {
                   className={`lg:py-2 lg:px-4 md:py-1.5 md:px-2.5 py-1 px-2 lg:text-base md:text-sm text-xs bg-white text-black rounded-3xl text-center w-fit transition-all duration-300 ease-out cursor-pointer inline-block ${
                     category === item
                       ? "opacity-100"
-                      : "opacity-80 hover:opacity-100"
+                      : "opacity-50 hover:opacity-100"
                   }`}
                   key={i}
                 >
