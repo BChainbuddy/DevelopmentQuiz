@@ -35,12 +35,6 @@ export default function Quiz({
   const selectAnswer = async (choice: string) => {
     setSelectedAnswer(choice);
 
-    if (choice === correctAnswer) {
-      await addWin(session?.user?.email ?? "", category);
-    } else {
-      await addLoss(session?.user?.email ?? "", category);
-    }
-
     // Countdown to next round
     let timeLeft = 10;
     countdownIntervalRef.current = window.setInterval(() => {
@@ -54,6 +48,12 @@ export default function Quiz({
       }
       timeLeft--;
     }, 1000);
+
+    if (choice === correctAnswer) {
+      await addWin(session?.user?.email ?? "", category);
+    } else {
+      await addLoss(session?.user?.email ?? "", category);
+    }
   };
 
   const handleLeaveGame = () => {
