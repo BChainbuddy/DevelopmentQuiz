@@ -33,6 +33,10 @@ export default function Stats({
       .catch((err) => console.error("Error fetching stats:", err));
   }, [profile, category]);
 
+  const totalGames = stats.wins + stats.losses;
+  const accuracy =
+    totalGames > 0 ? ((stats.wins / totalGames) * 100).toFixed(1) : "0.0";
+
   return (
     <>
       <div>
@@ -42,9 +46,11 @@ export default function Stats({
           </p>
           <CategoryDropdown setCategory={setCategory} />
         </div>
-        <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center gap-y-[10vh]">
-          <Stat label="Wins" data={stats.wins} />
+        <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center md:gap-y-[10vh] gap-y-4 mt-4 md:mt-0">
+          <Stat label="Games" data={totalGames} />
+          <Stat label="Accuracy" data={accuracy} />
           <Ratio data={stats} />
+          <Stat label="Wins" data={stats.wins} />
           <Stat label="Losses" data={stats.losses} />
         </div>
       </div>

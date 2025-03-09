@@ -1,6 +1,6 @@
 interface StatProps {
   label: string;
-  data: number | undefined;
+  data: number | undefined | string;
 }
 
 export default function Stat({ label, data }: StatProps) {
