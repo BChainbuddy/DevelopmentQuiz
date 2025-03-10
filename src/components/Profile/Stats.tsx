@@ -47,11 +47,15 @@ export default function Stats({
           <CategoryDropdown setCategory={setCategory} />
         </div>
         <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center md:gap-y-[10vh] gap-y-4 mt-4 md:mt-0">
-          <Stat label="Games" data={totalGames} />
-          <Stat label="Accuracy" data={accuracy} />
+          <div className="flex flex-row lg:gap-x-8 md:gap-x-5 md:w-fit w-full justify-evenly items-center">
+            <Stat label="Games" data={totalGames} />
+            <Stat label="Accuracy" data={accuracy} />
+          </div>
           <Ratio data={stats} />
-          <Stat label="Wins" data={stats.wins} />
-          <Stat label="Losses" data={stats.losses} />
+          <div className="flex flex-row lg:gap-x-8 md:gap-x-5 md:w-fit w-full justify-evenly items-center">
+            <Stat label="Wins" data={stats.wins} />
+            <Stat label="Losses" data={stats.losses} />
+          </div>
         </div>
       </div>
     </>
