@@ -39,14 +39,14 @@ export default function Stats({
 
   return (
     <>
-      <div>
+      <div className="mt-6 md:mt-0">
         <div className="flex flex-col justify-center w-full items-center gap-y-2">
           <p className="lg:text-2xl md:text-xl text-base font-ibmPlexMono">
             SELECT CATEGORY
           </p>
           <CategoryDropdown setCategory={setCategory} />
         </div>
-        <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center md:gap-y-[10vh] gap-y-4 mt-4 md:mt-0">
+        <div className="flex md:flex-row flex-col md:justify-around justify-evenly items-center md:gap-y-[10vh] gap-y-4 mt-10 md:mt-0">
           <div className="flex flex-row lg:gap-x-8 md:gap-x-5 md:w-fit w-full justify-evenly items-center">
             <Stat label="Games" data={totalGames} />
             <Stat label="Accuracy" data={accuracy} />
