@@ -41,7 +41,7 @@ export default function LeaderboardPage() {
   }, [session, category]);
 
   return (
-    <div className="flex md:flex-row flex-col my-auto h-fit max-w-[90rem] mx-auto w-full md:gap-y-0 gap-y-12">
+    <div className="flex md:flex-row flex-col md:my-auto mt-12 h-fit max-w-[90rem] mx-auto w-full md:gap-y-0 gap-y-12">
       <ToggleAccount
         getData={getData}
         setCategory={setCategory}
