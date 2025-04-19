@@ -12,6 +12,8 @@ export default function NavOptions() {
     <div className="md:flex hidden flex-row justify-center items-end lg:space-x-2 md:space-x-1 font-inter">
       {pathname !== "/" && (
         <>
+          <NavOption href="/interview" name="Interview" />
+          <p className={separatorClass}>I</p>
           <NavOption href="/game" name="Game" />
           <p className={separatorClass}>I</p>
           <NavOption href="/profile" name="Profile" />

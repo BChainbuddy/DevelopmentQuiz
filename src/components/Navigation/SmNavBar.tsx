@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import SmNavOption from "./SmNavOption";
 import { usePathname } from "next/navigation";
 

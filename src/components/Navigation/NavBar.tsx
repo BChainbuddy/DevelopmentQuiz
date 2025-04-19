@@ -1,5 +1,4 @@
 import Link from "next/link";
-import NavOption from "./NavOption";
 import NavOptions from "./NavOptions";
 import SmNavBar from "./SmNavBar";
 
