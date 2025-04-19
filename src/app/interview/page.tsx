@@ -2,166 +2,184 @@
 
 import Quiz from "@/components/Quiz/Quiz";
 import CircleLoading from "@/ui/CircleLoading";
-import { useState } from "react";
-import { categories } from "@/data/categories";
+import { useState, useRef } from "react";
+import { useSession } from "next-auth/react";
+import { addLoss, addWin } from "@/actions/actions";
 
-export default function GamePage() {
+export default function InterviewPage() {
+  const TOTAL_ROUNDS = 10;
+  const ROUND_TIMEOUT = 10000; // ms
+
+  const { data: session } = useSession();
+
   const [startGame, setStartGame] = useState(false);
   const [loadingGame, setLoadingGame] = useState(false);
 
+  // Track current round (1-based)
+  const [round, setRound] = useState(0);
+
+  // Current question state
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState<{ choice: string; answer: string }[]>(
     []
   );
   const [correctAnswer, setCorrectAnswer] = useState("");
 
-  //   const [category, setCategory] = useState(categories[0]);
-  const [position, setPosition] = useState("Frontend");
+  // Position to interview for
+  const [position, setPosition] = useState<string>("Frontend");
 
-  const handleNewGame = () => {
-    setStartGame(true);
-    newRound();
-  };
+  const countdownIntervalRef = useRef<number | null>(null);
 
-  const MAX_RETRIES = 3;
+  // Build a single-question prompt for the API
+  function buildPrompt(position: string, round: number) {
+    return (
+      `You are an experienced ${position} engineering manager conducting a mock interview. ` +
+      `Provide exactly one multiple-choice question (Question ${round} of ${TOTAL_ROUNDS}) relevant to a ${position} developer role. ` +
+      `Format precisely as:
+Question: <the question text>
+A) <choice A>
+B) <choice B>
+C) <choice C>
+Correct answer: <letter>`
+    );
+  }
 
-  async function newRound(retryCount = 0) {
+  // Fetch one round
+  async function fetchRound(retryCount = 0) {
     setLoadingGame(true);
     try {
-      const response = await fetch(`/api/getQuestions/${category.prompt}`);
-      if (!response.ok) {
-        // If there's an HTTP error (e.g. network error, server error), throw and do not retry.
-        throw new Error(`HTTP error: ${response.status}`);
+      const prompt = buildPrompt(position, round);
+      const res = await fetch(
+        `/api/getQuestions/${encodeURIComponent(prompt)}`
+      );
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const { data } = await res.json();
+      const raw = data.choices[0].message.content;
+
+      // Split lines
+      interface QuizOption {
+        choice: string;
+        answer: string;
       }
-      const { data } = await response.json();
-      const message = data.choices[0].message.content;
-      const lines = message
+
+      interface ApiResponse {
+        data: {
+          choices: {
+            message: {
+              content: string;
+            };
+          }[];
+        };
+      }
+
+      const lines: string[] = raw
         .split("\n")
-        .map((line: string) => line.trim())
-        .filter((line: string) => line !== "");
+        .map((l: string) => l.trim())
+        .filter((l: string) => l);
 
       // Parse question
-      let question = "";
-      for (const line of lines) {
-        if (line.startsWith("Question:")) {
-          question = line.replace("Question:", "").trim();
-          break;
-        }
+      const qLine = lines.find((l) => /^Question:/i.test(l));
+      const qText = qLine ? qLine.replace(/^Question:/i, "").trim() : "";
+
+      // Parse options
+      const opts: { choice: string; answer: string }[] = [];
+      for (const l of lines) {
+        const m = l.match(/^([A-C])\)\s*(.+)$/);
+        if (m) opts.push({ choice: m[1], answer: m[2] });
       }
 
-      // Parse answers
-      const answers: { choice: string; answer: string }[] = [];
-      const answerPattern = /^([A-Z])\)\s*(.+)$/;
-      for (const line of lines) {
-        const match = line.match(answerPattern);
-        if (match) {
-          const choice = match[1];
-          const answerText = match[2];
-          answers.push({ choice, answer: answerText });
-        }
-      }
-
-      // Parse correct answer
-      const correctLine = lines.find((line: string) =>
-        /^Correct answer:/i.test(line)
-      );
-      const correctAnswerMatch = correctLine
-        ? correctLine
+      // Parse correct
+      const corrLine = lines.find((l) => /^Correct answer:/i.test(l));
+      const corrMatch = corrLine
+        ? corrLine
             .replace(/^Correct answer:/i, "")
             .trim()
-            .match(/^([A-Z])/i)
+            .match(/^([A-C])/i)
         : null;
-      const correctAnswer = correctAnswerMatch
-        ? correctAnswerMatch[1].toUpperCase()
-        : "";
+      const corr = corrMatch ? corrMatch[1].toUpperCase() : "";
 
-      // If the structure is invalid, retry
-      if (!question || answers.length === 0 || !correctAnswer) {
-        if (retryCount < MAX_RETRIES) {
-          console.warn(
-            `Invalid response structure, retrying newRound (${
-              retryCount + 1
-            }/${MAX_RETRIES})`
-          );
-          return newRound(retryCount + 1);
-        } else {
-          throw new Error(
-            "Max retries exceeded due to invalid response structure."
-          );
-        }
+      if (!qText || opts.length !== 3 || !corr) {
+        if (retryCount < 3) return fetchRound(retryCount + 1);
+        console.error("Invalid structure after retries");
+        return;
       }
 
-      // Set state
-      setQuestion(question);
-      setAnswers(answers);
-      setCorrectAnswer(correctAnswer);
-    } catch (error: any) {
-      console.error("Error in newRound:", error);
-      // If it's an HTTP/network error, do not retry automatically.
-      if (error.message && error.message.startsWith("HTTP error")) {
-        throw error;
-      }
-      // Retry on other errors
-      if (retryCount < MAX_RETRIES) {
-        return newRound(retryCount + 1);
-      } else {
-        throw error;
-      }
+      setQuestion(qText);
+      setAnswers(opts);
+      setCorrectAnswer(corr);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoadingGame(false);
     }
   }
 
+  // Called by Quiz when countdown ends
+  async function newRound() {
+    // Score tracking
+    // (Quiz.selectAnswer already calls addWin/addLoss)
+
+    if (round >= TOTAL_ROUNDS) {
+      setStartGame(false);
+      return;
+    }
+    const next = round + 1;
+    setRound(next);
+    await fetchRound();
+  }
+
+  function handleNewGame() {
+    setRound(1);
+    setStartGame(true);
+    fetchRound();
+  }
+
   return (
     <div className="flex flex-col flex-1 w-full max-w-[90rem] mx-auto">
       {!startGame ? (
-        <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono md:gap-y-[10vh] gap-y-[5vh] mt-8 md:mt-0">
-          <div className="flex flex-col items-center justify-center gap-y-4">
-            <p className="md:text-2xl text-lg text-white text-center">
-              Mock Interview
-            </p>
-            <p className="max-w-[40rem] text-[#FFFFFF99] md:text-center text-start md:text-base text-xs">
-              <span className="hidden md:block">
-                Mock Interview is a game where you can test your knowledge of
-                developer position that you are applying for. You will be
-                presented with a series of questions, and you have to choose the
-                correct answer from the options provided. The game is designed
-                to help you improve your skills and prepare for real-life
-                interviews. The interview doesnt count towards your stats.
-              </span>
-              <span className="md:hidden block">
-                Each game offers a unique, OpenAI-generated web development
-                question with three choices. Answer correctly to win and
-                incorrectly to lose. Click "Start Game" when you're ready. Good
-                luck!
-              </span>
-            </p>
-          </div>
-          <div className="flex flex-col justify-center items-center md:gap-y-6 gap-y-4">
-            <p className="text-center lg:text-xl md:text-lg text-base">
-              Enter the position you want to practice for
-            </p>
+        <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-5 mt-8 md:mt-0">
+          <h1 className="text-2xl text-white">Mock Interview</h1>
+          <p className="max-w-xl text-[#FFFFFF99] text-center">
+            Practice {TOTAL_ROUNDS} multiple-choice questions for your desired
+            role. Stats won’t be recorded.
+          </p>
+          <div className="mt-4">
             <input
               type="text"
-              placeholder="Junior Frontend React Developer"
-              className="lg:w-[600px] md:w-[400px] mx-auto p-2 rounded-lg bg-[#FFFFFF33] text-white placeholder:text-[#FFFFFF99] focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+              placeholder="e.g. Senior Backend Node.js Developer"
+              className="w-80 p-2 rounded-lg bg-[#FFFFFF33] text-white placeholder-[#FFFFFF99] focus:ring-white"
               value={position}
               onChange={(e) => setPosition(e.target.value)}
             />
           </div>
           <button
-            className="text-black rounded-xl bg-white md:p-2 p-1.5 cursor-pointer md:text-base text-sm"
+            className="mt-6 bg-white text-black py-2 px-4 rounded-lg"
             onClick={handleNewGame}
           >
-            START GAME
+            START INTERVIEW
           </button>
         </div>
       ) : loadingGame ? (
-        <div className="flex w-full flex-1 items-center justify-center">
-          <CircleLoading className="lg:w-10 lg:h-10 md:w-8 md:h-8 h-5 w-5 fill-[#d9d9d9]" />
+        <div className="flex flex-1 items-center justify-center">
+          <CircleLoading className="w-8 h-8 fill-[#d9d9d9]" />
         </div>
       ) : (
-        <></>
+        <div className="flex flex-col flex-1 items-center justify-center">
+          <h2 className="text-lg text-white mt-10">
+            Round {round} of {TOTAL_ROUNDS}
+          </h2>
+          <Quiz
+            startGame={startGame}
+            setStartGame={setStartGame}
+            newRound={newRound}
+            question={question}
+            answers={answers}
+            correctAnswer={correctAnswer}
+            category={position}
+            maxRounds={TOTAL_ROUNDS}
+            round={round}
+          />
+        </div>
       )}
     </div>
   );

@@ -13,7 +13,9 @@ interface QuizProps {
   question: string;
   answers: { choice: string; answer: string }[];
   correctAnswer: string;
-  category: string;
+  category?: string;
+  maxRounds?: number;
+  round?: number;
 }
 
 export default function Quiz({
@@ -23,7 +25,9 @@ export default function Quiz({
   question,
   answers,
   correctAnswer,
-  category,
+  category = "",
+  maxRounds = 0,
+  round = 0,
 }: QuizProps) {
   const [countdown, setCountdown] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -49,10 +53,12 @@ export default function Quiz({
       timeLeft--;
     }, 1000);
 
-    if (choice === correctAnswer) {
-      await addWin(session?.user?.email ?? "", category);
-    } else {
-      await addLoss(session?.user?.email ?? "", category);
+    if (category) {
+      if (choice === correctAnswer) {
+        await addWin(session?.user?.email ?? "", category);
+      } else {
+        await addLoss(session?.user?.email ?? "", category);
+      }
     }
   };
 
@@ -71,7 +77,10 @@ export default function Quiz({
 
   return (
     <div className="w-full flex-1 h-full flex flex-col font-ibmPlexMono items-center md:justify-evenly pt-3 md:pt-0">
-      <Question question={question} />
+      <Question
+        question={question}
+        rounds={maxRounds ? `${round}/${maxRounds}` : ""}
+      />
       <div className="flex md:flex-row flex-col justify-between w-full items-center lg:gap-x-[15%] md:gap-x-[5%] md:gap-y-0 gap-y-[2vh] mt-6 md:mt-0">
         {answers && (
           <>
