@@ -163,7 +163,7 @@ export default function GamePage() {
             </div>
           </div>
           <button
-            className="text-black rounded-xl bg-white md:p-2 p-1.5 cursor-pointer md:text-base text-sm"
+            className="bg-white text-black py-2 px-4 rounded-lg hover:bg-[#FFFFFF99] transition duration-300 ease-out"
             onClick={handleNewGame}
           >
             START GAME
@@ -175,7 +175,6 @@ export default function GamePage() {
         </div>
       ) : (
         <Quiz
-          startGame={startGame}
           setStartGame={setStartGame}
           newRound={newRound}
           question={question}

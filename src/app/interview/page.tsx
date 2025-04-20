@@ -2,45 +2,34 @@
 
 import Quiz from "@/components/Quiz/Quiz";
 import CircleLoading from "@/ui/CircleLoading";
-import { useState, useRef } from "react";
-import { useSession } from "next-auth/react";
-import { addLoss, addWin } from "@/actions/actions";
+import { useState } from "react";
 
 export default function InterviewPage() {
   const TOTAL_ROUNDS = 10;
-  const ROUND_TIMEOUT = 10000; // ms
-
-  const { data: session } = useSession();
 
   const [startGame, setStartGame] = useState(false);
   const [loadingGame, setLoadingGame] = useState(false);
 
-  // Track current round (1-based)
   const [round, setRound] = useState(0);
 
-  // Current question state
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState<{ choice: string; answer: string }[]>(
     []
   );
   const [correctAnswer, setCorrectAnswer] = useState("");
 
-  // Position to interview for
   const [position, setPosition] = useState<string>("Frontend");
 
-  const countdownIntervalRef = useRef<number | null>(null);
-
-  // Build a single-question prompt for the API
   function buildPrompt(position: string, round: number) {
     return (
       `You are an experienced ${position} engineering manager conducting a mock interview. ` +
       `Provide exactly one multiple-choice question (Question ${round} of ${TOTAL_ROUNDS}) relevant to a ${position} developer role. ` +
       `Format precisely as:
-Question: <the question text>
-A) <choice A>
-B) <choice B>
-C) <choice C>
-Correct answer: <letter>`
+        Question: <the question text>
+        A) <choice A>
+        B) <choice B>
+        C) <choice C>
+        Correct answer: <letter>`
     );
   }
 
@@ -55,22 +44,6 @@ Correct answer: <letter>`
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
       const { data } = await res.json();
       const raw = data.choices[0].message.content;
-
-      // Split lines
-      interface QuizOption {
-        choice: string;
-        answer: string;
-      }
-
-      interface ApiResponse {
-        data: {
-          choices: {
-            message: {
-              content: string;
-            };
-          }[];
-        };
-      }
 
       const lines: string[] = raw
         .split("\n")
@@ -114,11 +87,7 @@ Correct answer: <letter>`
     }
   }
 
-  // Called by Quiz when countdown ends
   async function newRound() {
-    // Score tracking
-    // (Quiz.selectAnswer already calls addWin/addLoss)
-
     if (round >= TOTAL_ROUNDS) {
       setStartGame(false);
       return;
@@ -147,13 +116,12 @@ Correct answer: <letter>`
             <input
               type="text"
               placeholder="e.g. Senior Backend Node.js Developer"
-              className="w-80 p-2 rounded-lg bg-[#FFFFFF33] text-white placeholder-[#FFFFFF99] focus:ring-white"
-              value={position}
+              className="w-80 p-2 rounded-lg bg-[#FFFFFF33] text-white placeholder-[#FFFFFF99] focus:ring-white focus:ring-2 focus:outline-none"
               onChange={(e) => setPosition(e.target.value)}
             />
           </div>
           <button
-            className="mt-6 bg-white text-black py-2 px-4 rounded-lg"
+            className="mt-6 bg-white text-black py-2 px-4 rounded-lg hover:bg-[#FFFFFF99] transition duration-300 ease-out"
             onClick={handleNewGame}
           >
             START INTERVIEW
@@ -164,22 +132,16 @@ Correct answer: <letter>`
           <CircleLoading className="w-8 h-8 fill-[#d9d9d9]" />
         </div>
       ) : (
-        <div className="flex flex-col flex-1 items-center justify-center">
-          <h2 className="text-lg text-white mt-10">
-            Round {round} of {TOTAL_ROUNDS}
-          </h2>
-          <Quiz
-            startGame={startGame}
-            setStartGame={setStartGame}
-            newRound={newRound}
-            question={question}
-            answers={answers}
-            correctAnswer={correctAnswer}
-            category={position}
-            maxRounds={TOTAL_ROUNDS}
-            round={round}
-          />
-        </div>
+        <Quiz
+          setStartGame={setStartGame}
+          newRound={newRound}
+          question={question}
+          answers={answers}
+          correctAnswer={correctAnswer}
+          category={position}
+          maxRounds={TOTAL_ROUNDS}
+          round={round}
+        />
       )}
     </div>
   );

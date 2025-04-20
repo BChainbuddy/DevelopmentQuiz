@@ -7,7 +7,6 @@ import { useSession } from "next-auth/react";
 import { addLoss, addWin } from "@/actions/actions";
 
 interface QuizProps {
-  startGame: boolean;
   setStartGame: (start: boolean) => void;
   newRound: () => void;
   question: string;
@@ -19,7 +18,6 @@ interface QuizProps {
 }
 
 export default function Quiz({
-  startGame,
   setStartGame,
   newRound,
   question,
@@ -62,6 +60,17 @@ export default function Quiz({
     }
   };
 
+  const handleNextGame = () => {
+    // Clear the interval if it's active
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
+    setCountdown(0);
+    setSelectedAnswer("");
+    newRound();
+  };
+
   const handleLeaveGame = () => {
     // Clear the interval if it's active
     if (countdownIntervalRef.current) {
@@ -102,12 +111,20 @@ export default function Quiz({
           {countdown ? `Starting next game in ${countdown}` : " "}
         </p>
         {countdown ? (
-          <button
-            className="slideIn bg-white opacity-90 hover:opacity-100 text-black md:py-1 md:px-3 py-0.5 px-2 rounded-lg md:mt-2 mt-1.5 md:text-sm text-xs transition-all duration-300 ease-out"
-            onClick={handleLeaveGame}
-          >
-            LEAVE GAME
-          </button>
+          <>
+            <button
+              className="slideIn bg-white opacity-90 hover:opacity-100 text-black md:py-1 md:px-3 py-0.5 px-2 rounded-lg md:mt-2 mt-1.5 md:text-sm text-xs transition-all duration-300 ease-out"
+              onClick={handleNextGame}
+            >
+              NEXT {maxRounds ? "ROUND" : "QUESTION"}
+            </button>
+            <button
+              className="slideIn bg-white opacity-90 hover:opacity-100 text-black md:py-1 md:px-3 py-0.5 px-2 rounded-lg md:mt-2 mt-1.5 md:text-sm text-xs transition-all duration-300 ease-out"
+              onClick={handleLeaveGame}
+            >
+              LEAVE GAME
+            </button>
+          </>
         ) : (
           <></>
         )}
