@@ -1,6 +1,7 @@
 "use client";
 
 import Quiz from "@/components/Quiz/Quiz";
+import Results from "@/components/Quiz/Results";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 
@@ -88,13 +89,11 @@ export default function InterviewPage() {
   }
 
   async function newRound() {
-    if (round >= TOTAL_ROUNDS) {
-      setStartGame(false);
-      return;
-    }
     const next = round + 1;
     setRound(next);
-    await fetchRound();
+    if (round <= TOTAL_ROUNDS) {
+      await fetchRound();
+    }
   }
 
   function handleNewGame() {
@@ -131,6 +130,8 @@ export default function InterviewPage() {
         <div className="flex flex-1 items-center justify-center">
           <CircleLoading className="w-8 h-8 fill-[#d9d9d9]" />
         </div>
+      ) : round > TOTAL_ROUNDS ? (
+        <Results percent={0.5} />
       ) : (
         <Quiz
           setStartGame={setStartGame}
