@@ -12,6 +12,7 @@ export default function InterviewPage() {
   const [loadingGame, setLoadingGame] = useState(false);
 
   const [round, setRound] = useState(0);
+  const [numCorrect, setNumCorrect] = useState(0);
 
   const [question, setQuestion] = useState("");
   const [answers, setAnswers] = useState<{ choice: string; answer: string }[]>(
@@ -98,6 +99,7 @@ export default function InterviewPage() {
 
   function handleNewGame() {
     setRound(1);
+    setNumCorrect(0);
     setStartGame(true);
     fetchRound();
   }
@@ -131,7 +133,7 @@ export default function InterviewPage() {
           <CircleLoading className="w-8 h-8 fill-[#d9d9d9]" />
         </div>
       ) : round > TOTAL_ROUNDS ? (
-        <Results percent={0.5} />
+        <Results percent={numCorrect / TOTAL_ROUNDS} />
       ) : (
         <Quiz
           setStartGame={setStartGame}
@@ -139,9 +141,10 @@ export default function InterviewPage() {
           question={question}
           answers={answers}
           correctAnswer={correctAnswer}
-          category={position}
           maxRounds={TOTAL_ROUNDS}
           round={round}
+          setNumCorrect={setNumCorrect}
+          numCorrect={numCorrect}
         />
       )}
     </div>

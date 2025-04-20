@@ -15,6 +15,8 @@ interface QuizProps {
   category?: string;
   maxRounds?: number;
   round?: number;
+  setNumCorrect?: (win: number) => void;
+  numCorrect?: number;
 }
 
 export default function Quiz({
@@ -26,6 +28,8 @@ export default function Quiz({
   category = "",
   maxRounds = 0,
   round = 0,
+  setNumCorrect,
+  numCorrect = 0,
 }: QuizProps) {
   const [countdown, setCountdown] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
@@ -56,6 +60,12 @@ export default function Quiz({
         await addWin(session?.user?.email ?? "", category);
       } else {
         await addLoss(session?.user?.email ?? "", category);
+      }
+    } else {
+      if (choice === correctAnswer) {
+        if (setNumCorrect) {
+          setNumCorrect(numCorrect + 1);
+        }
       }
     }
   };
