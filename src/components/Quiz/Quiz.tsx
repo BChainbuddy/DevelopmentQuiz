@@ -40,31 +40,32 @@ export default function Quiz({
 
   const selectAnswer = async (choice: string) => {
     setSelectedAnswer(choice);
-
-    // Countdown to next round
-    let timeLeft = 10;
-    countdownIntervalRef.current = window.setInterval(() => {
-      setCountdown(timeLeft);
-      if (timeLeft === 0) {
-        newRound();
-        if (countdownIntervalRef.current) {
-          clearInterval(countdownIntervalRef.current);
-          countdownIntervalRef.current = null;
+    if (countdown === 0) {
+      // Countdown to next round
+      let timeLeft = 10;
+      countdownIntervalRef.current = window.setInterval(() => {
+        setCountdown(timeLeft);
+        if (timeLeft === 0) {
+          newRound();
+          if (countdownIntervalRef.current) {
+            clearInterval(countdownIntervalRef.current);
+            countdownIntervalRef.current = null;
+          }
         }
-      }
-      timeLeft--;
-    }, 1000);
+        timeLeft--;
+      }, 1000);
 
-    if (category) {
-      if (choice === correctAnswer) {
-        await addWin(session?.user?.email ?? "", category);
+      if (category) {
+        if (choice === correctAnswer) {
+          await addWin(session?.user?.email ?? "", category);
+        } else {
+          await addLoss(session?.user?.email ?? "", category);
+        }
       } else {
-        await addLoss(session?.user?.email ?? "", category);
-      }
-    } else {
-      if (choice === correctAnswer) {
-        if (setNumCorrect) {
-          setNumCorrect(numCorrect + 1);
+        if (choice === correctAnswer) {
+          if (setNumCorrect) {
+            setNumCorrect(numCorrect + 1);
+          }
         }
       }
     }
