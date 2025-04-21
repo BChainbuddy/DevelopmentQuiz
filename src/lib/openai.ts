@@ -4,18 +4,23 @@ interface ChatGPTResponse {
   choices: { message: { content: string } }[];
 }
 
+type RawItem = {
+  question: string;
+  answers: string[];
+  correctAnswer: string;
+};
+
 /**
- * Ask for `count` questions in JSON. Cleans out any
- * "Question N: " prefixes and "X) " answer labels.
+ * Fetches `count` questions from OpenAI, returns either a single item
+ * or an array of items, cleaned of any prefixes and normalized.
  */
 export async function fetchQuestions(
   prompt: string,
   count = 1
-): Promise<
-  | { question: string; answers: string[]; correctAnswer: string }
-  | Array<{ question: string; answers: string[]; correctAnswer: string }>
-> {
-  if (!process.env.OPENAI_API_KEY) throw new Error("Missing API key");
+): Promise<RawItem | RawItem[]> {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("Missing API key");
+  }
 
   const systemMessage = { role: "system", content: prompt };
   const userMessage = {
@@ -23,7 +28,7 @@ export async function fetchQuestions(
     content: `
 Please respond ONLY with ${
       count === 1 ? "a single JSON object" : `a JSON array of ${count} objects`
-    } in this shape:
+    } in this exact shape:
 
 ${
   count === 1
@@ -41,6 +46,8 @@ ${
   … total ${count} entries …
 ]`
 }
+
+Do NOT wrap your response in markdown or triple‑backticks. Return raw JSON only.
 `.trim(),
   };
 
@@ -51,37 +58,54 @@ ${
       messages: [systemMessage, userMessage],
       max_tokens: count === 1 ? 500 : 1000,
       temperature: 1.0,
-      presence_penalty: 0.0,
-      frequency_penalty: 0.0,
+      presence_penalty: count === 1 ? 0.5 : 0.0,
+      frequency_penalty: count === 1 ? 0.5 : 0.0,
       n: 1,
     },
-    { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } }
+    {
+      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+    }
   );
 
-  const raw = data.choices[0].message.content.trim();
-  let parsed;
+  // 1) strip any ``` fences
+  let raw = data.choices[0].message.content.trim();
+  raw = raw.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
+
+  // 2) parse JSON
+  let parsed: any;
   try {
     parsed = JSON.parse(raw);
-  } catch (err) {
+  } catch (e) {
     console.error("Invalid JSON from OpenAI:", raw);
     throw new Error("Failed to parse OpenAI response as JSON");
   }
 
-  // helper to strip prefixes
-  function cleanItem(item: {
-    question: string;
-    answers: string[];
-    correctAnswer: string;
-  }) {
-    return {
-      question: item.question.replace(/^Question\s*\d+:\s*/i, "").trim(),
-      answers: item.answers.map((ans) =>
-        ans.replace(/^[A-C]\)\s*/i, "").trim()
-      ),
-      correctAnswer: item.correctAnswer.trim().toUpperCase(),
-    };
+  // 3) helper to clean each question object
+  function cleanItem(item: any): RawItem {
+    // strip "Question N:" prefix
+    const question = String(item.question || "")
+      .replace(/^Question\s*\d+:\s*/i, "")
+      .trim();
+
+    // strip "A) ", "B) ", "C) " from each answer
+    const answers = Array.isArray(item.answers)
+      ? item.answers.map((ans: string) =>
+          String(ans)
+            .replace(/^[A-C]\)\s*/i, "")
+            .trim()
+        )
+      : [];
+
+    // extract first A/B/C letter from correctAnswer
+    const match = String(item.correctAnswer || "")
+      .toUpperCase()
+      .match(/[ABC]/);
+    const correctAnswer = match ? match[0] : "";
+
+    return { question, answers, correctAnswer };
   }
 
+  // 4) normalize array vs single
   if (Array.isArray(parsed)) {
     return parsed.map(cleanItem);
   } else {

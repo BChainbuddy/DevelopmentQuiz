@@ -17,95 +17,74 @@ export default function GamePage() {
 
   const [category, setCategory] = useState(categories[0]);
 
-  const handleNewGame = () => {
-    setStartGame(true);
-    newRound();
-  };
-
   const MAX_RETRIES = 3;
 
-  async function newRound(retryCount = 0) {
+  const handleNewGame = () => {
+    setStartGame(true);
+    fetchOneQuestion();
+  };
+
+  async function fetchOneQuestion(retryCount = 0) {
     setLoadingGame(true);
     try {
-      const response = await fetch(`/api/getQuestions/${category.prompt}`);
-      if (!response.ok) {
-        // If there's an HTTP error (e.g. network error, server error), throw and do not retry.
-        throw new Error(`HTTP error: ${response.status}`);
-      }
-      const { data } = await response.json();
-      const message = data.choices[0].message.content;
-      const lines = message
-        .split("\n")
-        .map((line: string) => line.trim())
-        .filter((line: string) => line !== "");
+      const url = new URL("/api/getQuestions", window.location.origin);
+      url.searchParams.set("prompt", category.prompt);
+      url.searchParams.set("count", "1");
 
-      // Parse question
-      let question = "";
-      for (const line of lines) {
-        if (line.startsWith("Question:")) {
-          question = line.replace("Question:", "").trim();
-          break;
-        }
-      }
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
-      // Parse answers
-      const answers: { choice: string; answer: string }[] = [];
-      const answerPattern = /^([A-Z])\)\s*(.+)$/;
-      for (const line of lines) {
-        const match = line.match(answerPattern);
-        if (match) {
-          const choice = match[1];
-          const answerText = match[2];
-          answers.push({ choice, answer: answerText });
-        }
+      // 1) pull out the payload
+      const payload = (await res.json()) as {
+        data:
+          | { question: string; answers: string[]; correctAnswer: string }
+          | Array<{
+              question: string;
+              answers: string[];
+              correctAnswer: string;
+            }>;
+      };
+
+      // 2) normalize array→object
+      let item = payload.data;
+      if (Array.isArray(item)) {
+        item = item[0];
       }
 
-      // Parse correct answer
-      const correctLine = lines.find((line: string) =>
-        /^Correct answer:/i.test(line)
-      );
-      const correctAnswerMatch = correctLine
-        ? correctLine
-            .replace(/^Correct answer:/i, "")
-            .trim()
-            .match(/^([A-Z])/i)
-        : null;
-      const correctAnswer = correctAnswerMatch
-        ? correctAnswerMatch[1].toUpperCase()
-        : "";
+      // 3) destructure
+      const { question: q, answers: ansArr, correctAnswer: ca } = item;
 
-      // If the structure is invalid, retry
-      if (!question || answers.length === 0 || !correctAnswer) {
+      // 4) validate
+      if (
+        typeof q !== "string" ||
+        !Array.isArray(ansArr) ||
+        ansArr.length !== 3 ||
+        !["A", "B", "C"].includes(ca)
+      ) {
         if (retryCount < MAX_RETRIES) {
-          console.warn(
-            `Invalid response structure, retrying newRound (${
-              retryCount + 1
-            }/${MAX_RETRIES})`
-          );
-          return newRound(retryCount + 1);
-        } else {
-          throw new Error(
-            "Max retries exceeded due to invalid response structure."
-          );
+          return fetchOneQuestion(retryCount + 1);
         }
+        throw new Error("Invalid question structure after retries");
       }
 
-      // Set state
-      setQuestion(question);
-      setAnswers(answers);
-      setCorrectAnswer(correctAnswer);
-    } catch (error: any) {
-      console.error("Error in newRound:", error);
-      // If it's an HTTP/network error, do not retry automatically.
-      if (error.message && error.message.startsWith("HTTP error")) {
-        throw error;
+      // 5) map into your shape
+      const mapped = ansArr.map((a, i) => ({
+        choice: String.fromCharCode(65 + i),
+        answer: a,
+      }));
+
+      setQuestion(q);
+      setAnswers(mapped);
+      setCorrectAnswer(ca);
+    } catch (err: any) {
+      console.error("Error fetching question:", err);
+      if (
+        !(err.message as string).startsWith("HTTP") &&
+        retryCount < MAX_RETRIES
+      ) {
+        return fetchOneQuestion(retryCount + 1);
       }
-      // Retry on other errors
-      if (retryCount < MAX_RETRIES) {
-        return newRound(retryCount + 1);
-      } else {
-        throw error;
-      }
+      throw err;
     } finally {
       setLoadingGame(false);
     }
@@ -176,7 +155,7 @@ export default function GamePage() {
       ) : (
         <Quiz
           setStartGame={setStartGame}
-          newRound={newRound}
+          newRound={fetchOneQuestion}
           question={question}
           answers={answers}
           correctAnswer={correctAnswer}

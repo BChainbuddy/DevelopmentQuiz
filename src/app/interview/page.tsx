@@ -4,7 +4,7 @@ import Quiz from "@/components/Quiz/Quiz";
 import Results from "@/components/Quiz/Results";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
-import { interviewPrompt } from "@/lib/interview";
+import { interviewPrompt } from "@/lib/prompts";
 
 export default function InterviewPage() {
   const TOTAL_ROUNDS = 10;

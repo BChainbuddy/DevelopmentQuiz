@@ -1,9 +1,9 @@
-import { createSystemPrompt } from "@/lib/openai";
+import { quizPrompt } from "@/lib/prompts";
 
 export const categories = [
   {
     name: "Web development",
-    prompt: createSystemPrompt("Web development", [
+    prompt: quizPrompt("Web development", [
       "HTML5",
       "CSS3",
       "JavaScript",
@@ -15,7 +15,7 @@ export const categories = [
   },
   {
     name: "Python",
-    prompt: createSystemPrompt("Python", [
+    prompt: quizPrompt("Python", [
       "data structures",
       "concurrency",
       "frameworks (Django/Flask)",
@@ -25,7 +25,7 @@ export const categories = [
   },
   {
     name: "Javascript",
-    prompt: createSystemPrompt("JavaScript", [
+    prompt: quizPrompt("JavaScript", [
       "ES6+ features",
       "async/await",
       "DOM manipulation",
@@ -35,7 +35,7 @@ export const categories = [
   },
   {
     name: "AI",
-    prompt: createSystemPrompt("AI", [
+    prompt: quizPrompt("AI", [
       "machine learning",
       "deep learning",
       "neural networks",
@@ -45,7 +45,7 @@ export const categories = [
   },
   {
     name: "Data science",
-    prompt: createSystemPrompt("Data science", [
+    prompt: quizPrompt("Data science", [
       "statistics",
       "data analysis",
       "Pandas",
@@ -55,7 +55,7 @@ export const categories = [
   },
   {
     name: "Blockchain",
-    prompt: createSystemPrompt("Blockchain", [
+    prompt: quizPrompt("Blockchain", [
       "smart contracts",
       "cryptography",
       "consensus mechanisms",
@@ -65,7 +65,7 @@ export const categories = [
   },
   {
     name: "Frontend",
-    prompt: createSystemPrompt("Frontend development", [
+    prompt: quizPrompt("Frontend development", [
       "React",
       "Vue",
       "bundling/performance",
@@ -75,7 +75,7 @@ export const categories = [
   },
   {
     name: "Backend",
-    prompt: createSystemPrompt("Backend development", [
+    prompt: quizPrompt("Backend development", [
       "APIs",
       "databases",
       "authentication",

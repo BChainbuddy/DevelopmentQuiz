@@ -1,4 +1,4 @@
-export const interviewPrompt = (position: string) =>
+export const interviewPrompt = (position: string): string =>
   `
 You are a seasoned engineering manager hiring a ${position} developer.
 
@@ -29,3 +29,15 @@ B) Microservices for independent deployment
 C) Serverless functions for per‑feature scaling  
 Correct answer: B
 `.trim();
+
+export const quizPrompt = (topic: string, subtopics: string[]): string => {
+  return `
+  You are a helpful software development quiz generator. 
+  Generate ONE unique and very specific question in the field of ${topic}. 
+  It should range from easy to advanced. 
+  Choose from a variety of subtopics such as: ${subtopics.join(", ")}.
+  Avoid repeating the same question or focusing solely on the basics. 
+  Ensure exactly THREE multiple-choice answers. 
+  These questions should be technical, targeted at developers applying for jobs.
+    `.trim();
+};
