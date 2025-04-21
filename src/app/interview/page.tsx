@@ -4,6 +4,7 @@ import Quiz from "@/components/Quiz/Quiz";
 import Results from "@/components/Quiz/Results";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
+import { interviewPrompt } from "@/lib/interview";
 
 export default function InterviewPage() {
   const TOTAL_ROUNDS = 10;
@@ -11,77 +12,54 @@ export default function InterviewPage() {
   const [startGame, setStartGame] = useState(false);
   const [loadingGame, setLoadingGame] = useState(false);
 
-  const [round, setRound] = useState(0);
-  const [numCorrect, setNumCorrect] = useState(0);
+  const [questionsList, setQuestionsList] = useState<
+    {
+      question: string;
+      answers: { choice: string; answer: string }[];
+      correctAnswer: string;
+    }[]
+  >([]);
 
-  const [question, setQuestion] = useState("");
-  const [answers, setAnswers] = useState<{ choice: string; answer: string }[]>(
-    []
-  );
-  const [correctAnswer, setCorrectAnswer] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [numCorrect, setNumCorrect] = useState(0);
 
   const [position, setPosition] = useState<string>("Frontend");
 
-  function buildPrompt(position: string, round: number) {
-    return (
-      `You are an experienced ${position} engineering manager conducting a mock interview. ` +
-      `Provide exactly one multiple-choice question (Question ${round} of ${TOTAL_ROUNDS}) relevant to a ${position} developer role. ` +
-      `Format precisely as:
-        Question: <the question text>
-        A) <choice A>
-        B) <choice B>
-        C) <choice C>
-        Correct answer: <letter>`
-    );
-  }
-
-  // Fetch one round
-  async function fetchRound(retryCount = 0) {
+  async function fetchAllQuestions() {
     setLoadingGame(true);
     try {
-      const prompt = buildPrompt(position, round);
-      const res = await fetch(
-        `/api/getQuestions/${encodeURIComponent(prompt)}`
-      );
-      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-      const { data } = await res.json();
-      const raw = data.choices[0].message.content;
+      const prompt = interviewPrompt(position);
+      const url = new URL("/api/getQuestions", window.location.origin);
+      url.searchParams.set("prompt", prompt);
+      url.searchParams.set("count", String(TOTAL_ROUNDS));
 
-      const lines: string[] = raw
-        .split("\n")
-        .map((l: string) => l.trim())
-        .filter((l: string) => l);
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      // Parse question
-      const qLine = lines.find((l) => /^Question:/i.test(l));
-      const qText = qLine ? qLine.replace(/^Question:/i, "").trim() : "";
+      const { data: rawQuestions } = (await res.json()) as {
+        data: Array<{
+          question: string;
+          answers: string[];
+          correctAnswer: string;
+        }>;
+      };
+      const items = rawQuestions.map((q) => ({
+        question: q.question,
+        answers: q.answers.map((ans, i) => ({
+          choice: String.fromCharCode(65 + i), // 'A','B','C'
+          answer: ans,
+        })),
+        correctAnswer: q.correctAnswer,
+      }));
 
-      // Parse options
-      const opts: { choice: string; answer: string }[] = [];
-      for (const l of lines) {
-        const m = l.match(/^([A-C])\)\s*(.+)$/);
-        if (m) opts.push({ choice: m[1], answer: m[2] });
+      if (items.length !== TOTAL_ROUNDS) {
+        console.error(
+          `Expected ${TOTAL_ROUNDS} questions, got ${items.length}`
+        );
       }
-
-      // Parse correct
-      const corrLine = lines.find((l) => /^Correct answer:/i.test(l));
-      const corrMatch = corrLine
-        ? corrLine
-            .replace(/^Correct answer:/i, "")
-            .trim()
-            .match(/^([A-C])/i)
-        : null;
-      const corr = corrMatch ? corrMatch[1].toUpperCase() : "";
-
-      if (!qText || opts.length !== 3 || !corr) {
-        if (retryCount < 3) return fetchRound(retryCount + 1);
-        console.error("Invalid structure after retries");
-        return;
-      }
-
-      setQuestion(qText);
-      setAnswers(opts);
-      setCorrectAnswer(corr);
+      setQuestionsList(items);
+      setCurrentIndex(0);
+      setNumCorrect(0);
     } catch (err) {
       console.error(err);
     } finally {
@@ -89,23 +67,23 @@ export default function InterviewPage() {
     }
   }
 
-  async function newRound() {
-    const next = round + 1;
-    setRound(next);
-    if (round <= TOTAL_ROUNDS) {
-      await fetchRound();
-    }
+  function goToNextRound() {
+    setCurrentIndex((i) => i + 1);
   }
 
-  function handleNewGame() {
-    setRound(1);
-    setNumCorrect(0);
+  function handleStart() {
     setStartGame(true);
-    fetchRound();
+    fetchAllQuestions();
   }
+
+  const current = questionsList[currentIndex] || {
+    question: "",
+    answers: [],
+    correctAnswer: "",
+  };
 
   return (
-    <div className="flex flex-col flex-1 w-full max-w-[90rem] mx-auto">
+    <div className="flex flex-col flex-1 w-full max-w-4xl mx-auto">
       {!startGame ? (
         <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-5 mt-8 md:mt-0">
           <h1 className="text-2xl text-white">Mock Interview</h1>
@@ -123,7 +101,7 @@ export default function InterviewPage() {
           </div>
           <button
             className="mt-6 bg-white text-black py-2 px-4 rounded-lg hover:bg-[#FFFFFF99] transition duration-300 ease-out"
-            onClick={handleNewGame}
+            onClick={handleStart}
           >
             START INTERVIEW
           </button>
@@ -132,17 +110,17 @@ export default function InterviewPage() {
         <div className="flex flex-1 items-center justify-center">
           <CircleLoading className="w-8 h-8 fill-[#d9d9d9]" />
         </div>
-      ) : round > TOTAL_ROUNDS ? (
+      ) : currentIndex >= TOTAL_ROUNDS ? (
         <Results percent={numCorrect / TOTAL_ROUNDS} />
       ) : (
         <Quiz
           setStartGame={setStartGame}
-          newRound={newRound}
-          question={question}
-          answers={answers}
-          correctAnswer={correctAnswer}
+          newRound={goToNextRound}
+          question={current.question}
+          answers={current.answers}
+          correctAnswer={current.correctAnswer}
           maxRounds={TOTAL_ROUNDS}
-          round={round}
+          round={currentIndex + 1}
           setNumCorrect={setNumCorrect}
           numCorrect={numCorrect}
         />

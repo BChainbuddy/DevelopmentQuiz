@@ -1,81 +1,90 @@
 import axios from "axios";
 
-interface ChatGPTChoice {
-  index: number;
-  message: {
-    role: string;
-    content: string;
-  };
-  finish_reason: string;
-}
-
 interface ChatGPTResponse {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: ChatGPTChoice[];
+  choices: { message: { content: string } }[];
 }
 
-export async function fetchQuestions(prompt: string) {
-  const apiUrl = "https://api.openai.com/v1/chat/completions";
+/**
+ * Ask for `count` questions in JSON. Cleans out any
+ * "Question N: " prefixes and "X) " answer labels.
+ */
+export async function fetchQuestions(
+  prompt: string,
+  count = 1
+): Promise<
+  | { question: string; answers: string[]; correctAnswer: string }
+  | Array<{ question: string; answers: string[]; correctAnswer: string }>
+> {
+  if (!process.env.OPENAI_API_KEY) throw new Error("Missing API key");
 
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+  const systemMessage = { role: "system", content: prompt };
+  const userMessage = {
+    role: "user",
+    content: `
+Please respond ONLY with ${
+      count === 1 ? "a single JSON object" : `a JSON array of ${count} objects`
+    } in this shape:
+
+${
+  count === 1
+    ? `{
+  "question": "<full question text>",
+  "answers": ["<A>","<B>","<C>"],
+  "correctAnswer": "<A|B|C>"
+}`
+    : `[
+  {
+    "question": "<full question text>",
+    "answers": ["<A>","<B>","<C>"],
+    "correctAnswer": "<A|B|C>"
+  },
+  … total ${count} entries …
+]`
+}
+`.trim(),
   };
 
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error("Missing OpenAI API key.");
-  }
+  const { data } = await axios.post<ChatGPTResponse>(
+    "https://api.openai.com/v1/chat/completions",
+    {
+      model: "gpt-3.5-turbo",
+      messages: [systemMessage, userMessage],
+      max_tokens: count === 1 ? 500 : 1000,
+      temperature: 1.0,
+      presence_penalty: 0.0,
+      frequency_penalty: 0.0,
+      n: 1,
+    },
+    { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } }
+  );
 
-  const requestBody = {
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content: prompt,
-      },
-      {
-        role: "user",
-        content: `Please format the response exactly as shown below, without any additional text or explanations:
-  
-  Question: [Your Question Here]
-  
-  A) [Answer Choice A]
-  B) [Answer Choice B]
-  C) [Answer Choice C]
-  
-  Correct answer: [A/B/C]`,
-      },
-    ],
-    max_tokens: 500, // Increased to ensure response completeness
-    temperature: 1.2, // randomness
-    presence_penalty: 0.5, // encourages new topics
-    frequency_penalty: 0.5, // discourages repetition
-    n: 1,
-  };
-
+  const raw = data.choices[0].message.content.trim();
+  let parsed;
   try {
-    const response = await axios.post<ChatGPTResponse>(apiUrl, requestBody, {
-      headers,
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error fetching questions:", error);
-    throw error;
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    console.error("Invalid JSON from OpenAI:", raw);
+    throw new Error("Failed to parse OpenAI response as JSON");
   }
-}
 
-export function createSystemPrompt(topic: string, subtopics: string[]): string {
-  return `
-You are a helpful software development quiz generator. 
-Generate ONE unique and very specific question in the field of ${topic}. 
-It should range from easy to advanced. 
-Choose from a variety of subtopics such as: ${subtopics.join(", ")}.
-Avoid repeating the same question or focusing solely on the basics. 
-Ensure exactly THREE multiple-choice answers. 
-These questions should be technical, targeted at developers applying for jobs.
-  `.trim();
+  // helper to strip prefixes
+  function cleanItem(item: {
+    question: string;
+    answers: string[];
+    correctAnswer: string;
+  }) {
+    return {
+      question: item.question.replace(/^Question\s*\d+:\s*/i, "").trim(),
+      answers: item.answers.map((ans) =>
+        ans.replace(/^[A-C]\)\s*/i, "").trim()
+      ),
+      correctAnswer: item.correctAnswer.trim().toUpperCase(),
+    };
+  }
+
+  if (Array.isArray(parsed)) {
+    return parsed.map(cleanItem);
+  } else {
+    return cleanItem(parsed);
+  }
 }
