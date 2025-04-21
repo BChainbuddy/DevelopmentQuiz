@@ -7,12 +7,12 @@ export default function LoginButton() {
     <>
       <button
         className="lg:text-2xl lg:px-14 lg:py-5 md:text-xl md:px-12 md:py-4 text-lg px-6 py-3 rounded-3xl bg-[#FFFFFF90] text-black hover:bg-[#FFF] transition-all duration-300 ease-in-out"
-        onClick={() => signIn("google", { callbackUrl: "/game" })}
+        onClick={() => signIn("google", { callbackUrl: "/quiz" })}
       >
         Login via GMAIL
       </button>
       <button
-        onClick={() => signIn("credentials", { callbackUrl: "/game" })}
+        onClick={() => signIn("credentials", { callbackUrl: "/quiz" })}
         className="lg:text-lg md:text-base text-sm text-white hover:text-white/60 transition-colors duration-300 ease-in-out border border-white rounded-2xl md:px-2 px-1.5 py-0.5"
       >
         Continue as Guest

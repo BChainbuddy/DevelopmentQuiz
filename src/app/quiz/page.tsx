@@ -5,7 +5,7 @@ import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 import { categories } from "@/data/categories";
 
-export default function GamePage() {
+export default function QuizPage() {
   const [startGame, setStartGame] = useState(false);
   const [loadingGame, setLoadingGame] = useState(false);
 

@@ -40,11 +40,11 @@ DevQuiz dynamically generates questions on web development using the **ChatGPT A
 5. **Security**
 
    - **Gmail Login** (via NextAuth) ensures secure sign-in.
-   - Middleware restricts all main routes (`/game`, `/profile`, `/leaderboard`) to logged-in users only.
+   - Middleware restricts all main routes (`/quiz`, `/profile`, `/leaderboard`) to logged-in users only.
 
 6. **Game Flow**
 
-   - Navigate to `/game` to start playing.
+   - Navigate to `/quiz` to start playing.
    - You have one question per round, displayed with three possible answers.
    - Once you select your answer, the quiz updates your win or loss count immediately.
    - Proceed to the next round whenever you’re ready.
@@ -57,7 +57,7 @@ DevQuiz dynamically generates questions on web development using the **ChatGPT A
 
 ## App Structure
 
-- **`/game`**  
+- **`/quiz`**  
   The main quiz interface. Each session gives you a new web dev question (multiple choice).
 
 - **`/profile`**  

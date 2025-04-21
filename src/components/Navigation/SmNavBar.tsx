@@ -11,7 +11,7 @@ export default function SmNavBar() {
   const pathname = usePathname();
 
   const navOptions = [
-    { href: "/game", name: "Game" },
+    { href: "/quiz", name: "Quiz" },
     { href: "/profile", name: "Profile" },
     { href: "/leaderboard", name: "Leaderboard" },
   ];

@@ -14,7 +14,7 @@ export default function NavOptions() {
         <>
           <NavOption href="/interview" name="Interview" />
           <p className={separatorClass}>I</p>
-          <NavOption href="/game" name="Game" />
+          <NavOption href="/quiz" name="Quiz" />
           <p className={separatorClass}>I</p>
           <NavOption href="/profile" name="Profile" />
           <p className={separatorClass}>I</p>
