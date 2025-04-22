@@ -3,8 +3,6 @@
 import { useState, useRef } from "react";
 import Question from "./Question";
 import AnswerCard from "./AnswerCard";
-import { useSession } from "next-auth/react";
-import { addLoss, addWin } from "@/actions/actions";
 
 interface QuizProps {
   setStartGame: (start: boolean) => void;
@@ -12,11 +10,9 @@ interface QuizProps {
   question: string;
   answers: { choice: string; answer: string }[];
   correctAnswer: string;
-  category?: string;
   maxRounds?: number;
   round?: number;
-  setNumCorrect?: (win: number) => void;
-  numCorrect?: number;
+  onAnswerSelected: (selectedAnswer: string) => void;
 }
 
 export default function Quiz({
@@ -25,18 +21,14 @@ export default function Quiz({
   question,
   answers,
   correctAnswer,
-  category = "",
   maxRounds = 0,
   round = 0,
-  setNumCorrect,
-  numCorrect = 0,
+  onAnswerSelected,
 }: QuizProps) {
   const [countdown, setCountdown] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
 
   const countdownIntervalRef = useRef<number | null>(null);
-
-  const { data: session } = useSession();
 
   const selectAnswer = async (choice: string) => {
     setSelectedAnswer(choice);
@@ -55,19 +47,7 @@ export default function Quiz({
         timeLeft--;
       }, 1000);
 
-      if (category) {
-        if (choice === correctAnswer) {
-          await addWin(session?.user?.email ?? "", category);
-        } else {
-          await addLoss(session?.user?.email ?? "", category);
-        }
-      } else {
-        if (choice === correctAnswer) {
-          if (setNumCorrect) {
-            setNumCorrect(numCorrect + 1);
-          }
-        }
-      }
+      onAnswerSelected(choice);
     }
   };
 
@@ -77,8 +57,7 @@ export default function Quiz({
       clearInterval(countdownIntervalRef.current);
       countdownIntervalRef.current = null;
     }
-    setCountdown(0);
-    setSelectedAnswer("");
+
     newRound();
   };
 
@@ -88,9 +67,6 @@ export default function Quiz({
       clearInterval(countdownIntervalRef.current);
       countdownIntervalRef.current = null;
     }
-
-    setCountdown(0);
-    setSelectedAnswer("");
 
     setStartGame(false);
   };

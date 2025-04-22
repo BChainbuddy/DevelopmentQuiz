@@ -76,6 +76,12 @@ export default function InterviewPage() {
     fetchAllQuestions();
   }
 
+  function handleAnswerSelected(selectedAnswer: string) {
+    if (selectedAnswer === current.correctAnswer) {
+      setNumCorrect((prev) => prev + 1);
+    }
+  }
+
   const current = questionsList[currentIndex] || {
     question: "",
     answers: [],
@@ -114,6 +120,7 @@ export default function InterviewPage() {
         <Results percent={numCorrect / TOTAL_ROUNDS} />
       ) : (
         <Quiz
+          key={currentIndex}
           setStartGame={setStartGame}
           newRound={goToNextRound}
           question={current.question}
@@ -121,8 +128,7 @@ export default function InterviewPage() {
           correctAnswer={current.correctAnswer}
           maxRounds={TOTAL_ROUNDS}
           round={currentIndex + 1}
-          setNumCorrect={setNumCorrect}
-          numCorrect={numCorrect}
+          onAnswerSelected={handleAnswerSelected}
         />
       )}
     </div>

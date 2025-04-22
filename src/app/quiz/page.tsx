@@ -4,6 +4,8 @@ import Quiz from "@/components/Quiz/Quiz";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 import { categories } from "@/data/categories";
+import { addLoss, addWin } from "@/actions/actions";
+import { useSession } from "next-auth/react";
 
 export default function QuizPage() {
   const [startGame, setStartGame] = useState(false);
@@ -18,6 +20,8 @@ export default function QuizPage() {
   const [category, setCategory] = useState(categories[0]);
 
   const MAX_RETRIES = 3;
+
+  const { data: session } = useSession();
 
   const handleNewGame = () => {
     setStartGame(true);
@@ -34,7 +38,6 @@ export default function QuizPage() {
       const res = await fetch(url.toString());
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
-      // 1) pull out the payload
       const payload = (await res.json()) as {
         data:
           | { question: string; answers: string[]; correctAnswer: string }
@@ -45,16 +48,13 @@ export default function QuizPage() {
             }>;
       };
 
-      // 2) normalize array→object
       let item = payload.data;
       if (Array.isArray(item)) {
         item = item[0];
       }
 
-      // 3) destructure
       const { question: q, answers: ansArr, correctAnswer: ca } = item;
 
-      // 4) validate
       if (
         typeof q !== "string" ||
         !Array.isArray(ansArr) ||
@@ -67,7 +67,6 @@ export default function QuizPage() {
         throw new Error("Invalid question structure after retries");
       }
 
-      // 5) map into your shape
       const mapped = ansArr.map((a, i) => ({
         choice: String.fromCharCode(65 + i),
         answer: a,
@@ -89,6 +88,14 @@ export default function QuizPage() {
       setLoadingGame(false);
     }
   }
+
+  const handleAnswerSelected = async (selectedAnswer: string) => {
+    if (selectedAnswer === correctAnswer) {
+      await addWin(session?.user?.email ?? "", category.name);
+    } else {
+      await addLoss(session?.user?.email ?? "", category.name);
+    }
+  };
 
   return (
     <div className="flex flex-col flex-1 w-full max-w-[90rem] mx-auto">
@@ -159,7 +166,7 @@ export default function QuizPage() {
           question={question}
           answers={answers}
           correctAnswer={correctAnswer}
-          category={category.name}
+          onAnswerSelected={handleAnswerSelected}
         />
       )}
     </div>
