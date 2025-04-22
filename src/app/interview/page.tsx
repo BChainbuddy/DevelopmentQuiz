@@ -5,6 +5,8 @@ import Results from "@/components/Quiz/Results";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 import { interviewPrompt } from "@/lib/prompts";
+import StartButton from "@/ui/StartButton";
+import Title from "@/ui/Title";
 
 export default function InterviewPage() {
   const TOTAL_ROUNDS = 10;
@@ -92,9 +94,7 @@ export default function InterviewPage() {
     <div className="flex flex-col flex-1 w-full max-w-4xl mx-auto">
       {!startGame ? (
         <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-5 mt-8 md:mt-0">
-          <p className="md:text-2xl text-lg text-white text-center">
-            Interview
-          </p>
+          <Title title="Interview" />
           <p className="max-w-[40rem] text-[#FFFFFF99] md:text-center text-start md:text-base text-xs">
             Practice {TOTAL_ROUNDS} multiple-choice questions for your desired
             role. Stats won’t be recorded.
@@ -107,12 +107,7 @@ export default function InterviewPage() {
               onChange={(e) => setPosition(e.target.value)}
             />
           </div>
-          <button
-            className="mt-6 bg-white text-black py-2 px-4 rounded-lg hover:bg-[#FFFFFF99] transition duration-300 ease-out"
-            onClick={handleStart}
-          >
-            START INTERVIEW
-          </button>
+          <StartButton startGame={handleStart} title="START INTERVIEW" />
         </div>
       ) : loadingGame ? (
         <div className="flex flex-1 items-center justify-center">

@@ -6,6 +6,8 @@ import { useState } from "react";
 import { categories } from "@/data/categories";
 import { addLoss, addWin } from "@/actions/actions";
 import { useSession } from "next-auth/react";
+import StartButton from "@/ui/StartButton";
+import Title from "@/ui/Title";
 
 export default function QuizPage() {
   const [startGame, setStartGame] = useState(false);
@@ -102,9 +104,7 @@ export default function QuizPage() {
       {!startGame ? (
         <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono md:gap-y-[10vh] gap-y-[5vh] mt-8 md:mt-0">
           <div className="flex flex-col items-center justify-center gap-y-4">
-            <p className="md:text-2xl text-lg text-white text-center">
-              How the games works?
-            </p>
+            <Title title="How The Quiz Works" />
             <p className="max-w-[40rem] text-[#FFFFFF99] md:text-center text-start md:text-base text-xs">
               {/* Each game has 10 rounds, the questions have 3 multiple choice
               questions and go from easy to hard, the goal is to get a score of
@@ -148,12 +148,7 @@ export default function QuizPage() {
               ))}
             </div>
           </div>
-          <button
-            className="bg-white text-black py-2 px-4 rounded-lg hover:bg-[#FFFFFF99] transition duration-300 ease-out"
-            onClick={handleNewGame}
-          >
-            START GAME
-          </button>
+          <StartButton startGame={handleNewGame} title="START GAME" />
         </div>
       ) : loadingGame ? (
         <div className="flex w-full flex-1 items-center justify-center">
