@@ -92,8 +92,10 @@ export default function InterviewPage() {
     <div className="flex flex-col flex-1 w-full max-w-4xl mx-auto">
       {!startGame ? (
         <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-5 mt-8 md:mt-0">
-          <h1 className="text-2xl text-white">Mock Interview</h1>
-          <p className="max-w-xl text-[#FFFFFF99] text-center">
+          <p className="md:text-2xl text-lg text-white text-center">
+            Interview
+          </p>
+          <p className="max-w-[40rem] text-[#FFFFFF99] md:text-center text-start md:text-base text-xs">
             Practice {TOTAL_ROUNDS} multiple-choice questions for your desired
             role. Stats won’t be recorded.
           </p>
@@ -101,7 +103,7 @@ export default function InterviewPage() {
             <input
               type="text"
               placeholder="e.g. Senior Backend Node.js Developer"
-              className="w-80 p-2 rounded-lg bg-[#FFFFFF33] text-white placeholder-[#FFFFFF99] focus:ring-white focus:ring-2 focus:outline-none"
+              className="md:w-80 w-[90vw] max-w-80 md:p-2 p-1.5 md:text-base text-sm rounded-lg bg-[#FFFFFF33] text-white placeholder-[#FFFFFF99] focus:ring-white focus:ring-2 focus:outline-none"
               onChange={(e) => setPosition(e.target.value)}
             />
           </div>

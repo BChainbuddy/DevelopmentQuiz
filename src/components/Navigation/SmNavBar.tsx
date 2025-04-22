@@ -12,6 +12,7 @@ export default function SmNavBar() {
 
   const navOptions = [
     { href: "/quiz", name: "Quiz" },
+    { href: "/interview", name: "Interview" },
     { href: "/profile", name: "Profile" },
     { href: "/leaderboard", name: "Leaderboard" },
   ];
