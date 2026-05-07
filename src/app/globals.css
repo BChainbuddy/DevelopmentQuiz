@@ -137,3 +137,15 @@ body {
   transform-origin: left;
   transform: scaleX(1);
 }
+
+/* Loading animation */
+@keyframes bounce-dot {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}

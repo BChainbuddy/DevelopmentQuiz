@@ -34,19 +34,20 @@ ${
   count === 1
     ? `{
   "question": "<full question text>",
-  "answers": ["<A>","<B>","<C>"],
+  "answers": ["<answer text only>","<answer text only>","<answer text only>"],
   "correctAnswer": "<A|B|C>"
 }`
     : `[
   {
     "question": "<full question text>",
-    "answers": ["<A>","<B>","<C>"],
+    "answers": ["<answer text only>","<answer text only>","<answer text only>"],
     "correctAnswer": "<A|B|C>"
   },
   … total ${count} entries …
 ]`
 }
 
+IMPORTANT: Do NOT include letter prefixes (A., B., C., A), B), etc.) in the answers array - just the answer text itself.
 Do NOT wrap your response in markdown or triple‑backticks. Return raw JSON only.
 `.trim(),
   };
@@ -87,11 +88,11 @@ Do NOT wrap your response in markdown or triple‑backticks. Return raw JSON onl
       .replace(/^Question\s*\d+:\s*/i, "")
       .trim();
 
-    // strip "A) ", "B) ", "C) " from each answer
+    // strip "A) ", "A. ", "A: ", "A - " etc. from each answer
     const answers = Array.isArray(item.answers)
       ? item.answers.map((ans: string) =>
           String(ans)
-            .replace(/^[A-C]\)\s*/i, "")
+            .replace(/^[A-C][\.\)\:\-]\s*/i, "")
             .trim()
         )
       : [];

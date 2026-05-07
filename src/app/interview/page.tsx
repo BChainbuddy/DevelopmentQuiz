@@ -114,7 +114,7 @@ export default function InterviewPage() {
         </div>
       ) : loadingGame ? (
         <div className="flex flex-1 items-center justify-center">
-          <CircleLoading className="w-8 h-8 fill-[#d9d9d9]" />
+          <CircleLoading />
         </div>
       ) : currentIndex >= TOTAL_ROUNDS ? (
         <Results percent={numCorrect / TOTAL_ROUNDS} />
