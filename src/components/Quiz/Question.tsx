@@ -5,13 +5,20 @@ interface QuestionProps {
 
 export default function Question({ question, rounds }: QuestionProps) {
   return (
-    <div className="flex flex-col w-fit justify-center items-center">
-      <p className="border-b border-b-white lg:text-lg md:text-base text-xs w-fit px-3">
-        Question {rounds ? rounds : ""}
-      </p>
-      <p className="lg:text-2xl md:text-xl text-base md:mt-2 mt-1 text-white text-center">
+    <div className="w-full max-w-3xl mx-auto text-center px-4">
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <p className="text-xs md:text-sm font-medium opacity-50 uppercase tracking-wider">
+          Question
+        </p>
+        {rounds && (
+          <span className="bg-white/10 px-3 py-1 rounded-full text-xs md:text-sm font-medium">
+            {rounds}
+          </span>
+        )}
+      </div>
+      <h2 className="lg:text-2xl md:text-xl text-lg text-white leading-relaxed font-medium">
         {question}
-      </p>
+      </h2>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import LoginButton from "@/components/LandingPage/LoginButton";
 export default function Home() {
   return (
     <>
-      <div className="font-ibmPlexMono flex flex-col items-center flex-1 justify-evenly">
+      <div className="font-ibmPlexMono flex flex-col items-center flex-1 justify-evenly pt-16 md:pt-20">
         <div className="flex flex-col items-center justify-center md:gap-y-6 gap-y-4">
           <p className="lg:text-7xl md:text-6xl text-3xl text-center text-white font-bold">
             Development Quiz

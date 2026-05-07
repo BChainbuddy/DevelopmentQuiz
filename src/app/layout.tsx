@@ -20,11 +20,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased ${inter.variable} ${ibmPlexMono.variable} ${inriaSans.variable} relative overflow-hidden`}
+        className={`antialiased ${inter.variable} ${ibmPlexMono.variable} ${inriaSans.variable} relative overflow-hidden h-screen flex flex-col`}
       >
         <SessionProvider>
-          <main className="px-[10%] flex flex-col min-h-screen z-10 relative">
-            <Navbar />
+          <Navbar />
+          <main className="px-[10%] flex flex-col flex-1 z-10 relative overflow-y-auto">
             {children}
           </main>
         </SessionProvider>

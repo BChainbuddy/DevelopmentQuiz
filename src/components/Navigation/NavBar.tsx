@@ -1,18 +1,29 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import NavOptions from "./NavOptions";
 import SmNavBar from "./SmNavBar";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  const hideNavbar = pathname === "/" || pathname.startsWith("/api/auth");
+
+  if (hideNavbar) return null;
+
   return (
-    <div className="w-full flex flex-row items-end justify-between max-w-[90rem] mx-auto lg:py-10 md:py-6 py-4">
-      <Link
-        className="font-inriaSans lg:text-5xl md:text-4xl text-3xl"
-        href="/"
-      >
-        DevQuiz
-      </Link>
-      <NavOptions />
-      <SmNavBar />
-    </div>
+    <nav className="sticky top-0 z-30 w-full backdrop-blur-md bg-[var(--background)]/80 border-b border-white/10">
+      <div className="w-full flex flex-row items-center justify-between max-w-[90rem] mx-auto lg:py-6 md:py-5 py-4 px-[10%]">
+        <Link
+          className="font-inriaSans lg:text-4xl md:text-3xl text-2xl font-semibold tracking-tight hover:opacity-80 transition-opacity"
+          href="/"
+        >
+          DevQuiz
+        </Link>
+        <NavOptions />
+        <SmNavBar />
+      </div>
+    </nav>
   );
 }

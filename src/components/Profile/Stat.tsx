@@ -1,15 +1,24 @@
 interface StatProps {
   label: string;
   data: number | undefined | string;
+  color?: "emerald" | "red";
 }
 
-export default function Stat({ label, data }: StatProps) {
+export default function Stat({ label, data, color }: StatProps) {
+  const colorClass = color === "emerald"
+    ? "text-emerald-400"
+    : color === "red"
+    ? "text-red-400"
+    : "";
+
   return (
-    <div className="flex flex-col gap-y-2 items-center justify-center lg:w-[10rem] md:w-[8rem] w-[5rem]">
-      <p className="md:border-b-4 border-b-2 w-full text-center lg:text-4xl md:text-3xl md:py-2 py-1">
+    <div className="flex flex-col gap-y-2 items-center justify-center bg-white/5 border border-white/10 rounded-xl p-5 backdrop-blur-sm">
+      <p className="text-xs font-medium opacity-50 uppercase tracking-wider">
         {label}
       </p>
-      <p className="lg:text-7xl md:text-6xl text-3xl font-bold">{data}</p>
+      <p className={`lg:text-3xl md:text-2xl text-xl font-bold ${colorClass}`}>
+        {data}
+      </p>
     </div>
   );
 }

@@ -7,7 +7,7 @@ export default function StartButton({
 }) {
   return (
     <button
-      className="mt-6 bg-white text-black md:text-base text-sm md:py-2 py-1.5 md:px-4 px-3 rounded-lg hover:bg-[#FFFFFF99] active:bg-[#FFFFFF99] transition duration-300 ease-out"
+      className="mt-4 bg-white/90 hover:bg-white text-black md:text-sm text-xs font-medium md:py-3 py-2.5 md:px-8 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
       onClick={startGame}
     >
       {title}

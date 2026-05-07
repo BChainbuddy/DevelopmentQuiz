@@ -21,7 +21,7 @@ export default function ToggleAccount({
 
   const { data: session } = useSession();
 
-  const handleToggle = async (e: any) => {
+  const handleToggle = async () => {
     await togglePublic(session?.user?.email ?? "", !isPublic);
 
     setIsPublic(!isPublic);
@@ -65,28 +65,34 @@ export default function ToggleAccount({
   }, [isPublic, category]);
 
   return (
-    <div className="flex flex-col font-inter items-center flex-1 md:order-2 order-1">
+    <div className="flex flex-col font-inter items-center flex-1 md:order-2 order-1 gap-y-6">
       <CategoryDropdown
         className="lg:w-48 md:w-48 w-36"
         setCategory={setCategory}
       />
-      <div className="md:text-xl text-lg mt-8">Public Account</div>
-      <button
-        className="md:h-[40px] md:w-[100px] w-[75px] h-[30px] bg-[#D9D9D9] rounded-full mt-4 relative"
-        onClick={handleToggle}
-      >
-        <div
-          className={`rounded-full md:h-[38px] md:w-[38px] h-[28px] w-[28px] absolute top-[1px] transition-all duration-500 ${
-            isPublic
-              ? "bg-green-500 md:translate-x-[60px] translate-x-[45px]"
-              : "bg-red-500 translate-x-[2px]"
-          }`}
-        ></div>
-      </button>
-      <p className="border-b-2 md:text-xl text-lg md:mt-16 mt-8">YOUR RANK</p>
-      <p className="md:text-4xl text-2xl md:h-[36px] h-[24px]">
-        {rank ? rank : ""}
-      </p>
+
+      <div className="flex flex-col items-center gap-y-3 mt-4">
+        <p className="md:text-base text-sm font-medium opacity-80">Public Account</p>
+        <button
+          className="md:h-[32px] md:w-[60px] w-[52px] h-[28px] bg-white/10 border border-white/20 rounded-full relative transition-colors hover:bg-white/15"
+          onClick={handleToggle}
+        >
+          <div
+            className={`rounded-full md:h-[26px] md:w-[26px] h-[22px] w-[22px] absolute top-[2px] transition-all duration-300 ${
+              isPublic
+                ? "bg-emerald-500 md:translate-x-[31px] translate-x-[27px]"
+                : "bg-white/40 translate-x-[3px]"
+            }`}
+          />
+        </button>
+      </div>
+
+      <div className="flex flex-col items-center gap-y-2 mt-6 bg-white/5 border border-white/10 rounded-xl px-8 py-5 backdrop-blur-sm">
+        <p className="md:text-sm text-xs font-medium opacity-60 uppercase tracking-wider">Your Rank</p>
+        <p className="md:text-5xl text-3xl font-bold">
+          {rank ? `#${rank}` : "—"}
+        </p>
+      </div>
     </div>
   );
 }

@@ -93,17 +93,20 @@ export default function InterviewPage() {
   return (
     <div className="flex flex-col flex-1 w-full max-w-4xl mx-auto">
       {!startGame ? (
-        <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-5 mt-8 md:mt-0">
+        <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-6 mt-8 md:mt-0">
           <Title title="Interview" />
           <p className="max-w-[40rem] text-[#FFFFFF99] md:text-center text-start md:text-base text-xs">
             Practice {TOTAL_ROUNDS} multiple-choice questions for your desired
-            role. Stats won’t be recorded.
+            role. Stats won't be recorded.
           </p>
-          <div className="mt-4">
+          <div className="flex flex-col items-center gap-y-2 mt-2">
+            <label className="text-xs md:text-sm font-medium opacity-50 uppercase tracking-wider">
+              Target Role
+            </label>
             <input
               type="text"
               placeholder="e.g. Senior Backend Node.js Developer"
-              className="md:w-80 w-[90vw] max-w-80 md:p-2 p-1.5 md:text-base text-sm rounded-lg bg-[#FFFFFF33] text-white placeholder-[#FFFFFF99] focus:ring-white focus:ring-2 focus:outline-none"
+              className="md:w-96 w-[85vw] max-w-96 px-4 py-3 md:text-sm text-xs rounded-xl bg-white/5 border border-white/20 text-white placeholder-white/40 focus:border-white/40 focus:bg-white/10 focus:outline-none transition-all duration-200"
               onChange={(e) => setPosition(e.target.value)}
             />
           </div>

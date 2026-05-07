@@ -72,15 +72,15 @@ export default function Quiz({
   };
 
   return (
-    <div className="w-full flex-1 h-full flex flex-col font-ibmPlexMono items-center md:justify-evenly pt-3 md:pt-0">
-      <Question
-        question={question}
-        rounds={maxRounds ? `${round}/${maxRounds}` : ""}
-      />
-      <div className="flex md:flex-row flex-col justify-between w-full items-center lg:gap-x-[15%] md:gap-x-[5%] md:gap-y-0 gap-y-[2vh] mt-6 md:mt-0">
-        {answers && (
-          <>
-            {answers.map((item, i) => (
+    <div className="w-full flex-1 flex flex-col font-ibmPlexMono items-center justify-center pb-4">
+      <div className="flex flex-col items-center">
+        <Question
+          question={question}
+          rounds={maxRounds ? `${round}/${maxRounds}` : ""}
+        />
+        <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mt-6 md:mt-8">
+          {answers &&
+            answers.map((item, i) => (
               <AnswerCard
                 choice={item.choice}
                 answer={item.answer}
@@ -90,28 +90,27 @@ export default function Quiz({
                 key={i}
               />
             ))}
-          </>
-        )}
+        </div>
       </div>
-      <div className="h-[6vh] mx-auto flex items-center justify-center flex-col md:mt-0 mt-6">
+      <div className="min-h-[80px] mx-auto flex items-center justify-center flex-col mt-6">
         <p className="md:text-base text-sm text-center">
           {countdown ? `Starting next game in ${countdown}` : " "}
         </p>
         {countdown ? (
-          <>
+          <div className="flex flex-row gap-3 mt-2">
             <button
-              className="slideIn bg-white opacity-90 hover:opacity-100 text-black md:py-1 md:px-3 py-0.5 px-2 rounded-lg md:mt-2 mt-1.5 md:text-sm text-xs transition-all duration-300 ease-out"
+              className="slideIn bg-white/90 hover:bg-white text-black md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
               onClick={handleNextGame}
             >
               NEXT {maxRounds ? "ROUND" : "QUESTION"}
             </button>
             <button
-              className="slideIn bg-white opacity-90 hover:opacity-100 text-black md:py-1 md:px-3 py-0.5 px-2 rounded-lg md:mt-2 mt-1.5 md:text-sm text-xs transition-all duration-300 ease-out"
+              className="slideIn bg-white/10 border border-white/20 hover:bg-white/20 md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
               onClick={handleLeaveGame}
             >
-              LEAVE GAME
+              LEAVE
             </button>
-          </>
+          </div>
         ) : (
           <></>
         )}

@@ -22,15 +22,15 @@ export default function SmNavBar() {
       {pathname !== "/" && (
         <>
           <motion.button
-            className="fixed right-3 top-3 p-1.5 md:hidden flex items-center justify-center bg-[#FFF] rounded-full border-2 border-white z-50"
+            className="fixed right-4 top-4 p-2 md:hidden flex items-center justify-center bg-[var(--background)] rounded-lg border border-white/20 z-50 backdrop-blur-sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <div className={`hamburger ${isMenuOpen ? "open" : ""}`}>
-              <span className="bg-white hamburger-top"></span>
-              <span className="bg-white hamburger-middle"></span>
-              <span className="bg-white hamburger-bottom"></span>
+              <span className="hamburger-top"></span>
+              <span className="hamburger-middle"></span>
+              <span className="hamburger-bottom"></span>
             </div>
           </motion.button>
 
@@ -42,7 +42,7 @@ export default function SmNavBar() {
                 animate={{ x: "0%" }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 80, damping: 12 }}
-                className="fixed md:hidden top-0 right-0 w-[70%] min-w-[10rem] h-full bg-gray-500 z-40 flex flex-col justify-center items-center p-4 opacity-95 border-l border-gray-600 shadow-[-2px_0px_0px_#000000] gap-y-5"
+                className="fixed md:hidden top-0 right-0 w-[70%] min-w-[12rem] h-full bg-[var(--background)]/95 backdrop-blur-md z-40 flex flex-col justify-center items-center p-6 border-l border-white/10 gap-y-6"
               >
                 {navOptions.map((item, i) => (
                   <SmNavOption
