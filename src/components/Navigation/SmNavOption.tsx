@@ -21,8 +21,10 @@ export default function SmNavOption({
     <Link
       href={href}
       onClick={() => setIsMenuOpen(false)}
-      className={`font-inter text-lg transition-opacity ${
-        isActive ? "font-semibold opacity-100" : "font-medium opacity-60"
+      className={`font-inter text-2xl py-3 px-8 rounded-xl transition-all duration-200 ${
+        isActive
+          ? "font-semibold bg-[var(--foreground)] text-[var(--background)]"
+          : "font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
       }`}
     >
       {name}

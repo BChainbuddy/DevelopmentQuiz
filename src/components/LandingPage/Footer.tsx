@@ -1,13 +1,13 @@
 export default function Footer() {
   return (
-    <footer className="text-white md:py-4 py-2 text-center text-sm bg-[#0a0a0a]">
+    <footer className="md:py-4 py-2 text-center text-sm">
       <p>
         Built by{" "}
         <a
           href="https://github.com/BChainbuddy"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline hover:text-gray-400"
+          className="underline hover:text-[var(--muted)]"
         >
           bchainbuddy (Jaka Potokar)
         </a>
@@ -17,7 +17,7 @@ export default function Footer() {
           href="https://github.com/BChainbuddy"
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-2 hover:text-gray-400"
+          className="mx-2 hover:text-[var(--muted)]"
         >
           GitHub
         </a>
@@ -25,7 +25,7 @@ export default function Footer() {
           href="https://twitter.com/YourTwitterHandle"
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-2 hover:text-gray-400"
+          className="mx-2 hover:text-[var(--muted)]"
         >
           Twitter
         </a>
@@ -33,12 +33,12 @@ export default function Footer() {
           href="https://linkedin.com/in/YourLinkedIn"
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-2 hover:text-gray-400"
+          className="mx-2 hover:text-[var(--muted)]"
         >
           LinkedIn
         </a>
       </div>
-      <p className="text-sm text-gray-400 mt-2">
+      <p className="text-sm text-[var(--muted)] mt-2">
         &copy; {new Date().getFullYear()} DevQuiz. All rights reserved.
       </p>
     </footer>

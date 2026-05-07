@@ -31,7 +31,7 @@ export default async function RootLayout({
             </main>
           </SessionProvider>
         </ThemeProvider>
-        <div className="absolute top-[90vh] left-1/2 -translate-x-1/2 w-[90vh] aspect-square rounded-full bg-[#D9D9D930] blur-[100px] z-0 blurredItem"></div>
+        <div className="absolute top-[90vh] left-1/2 -translate-x-1/2 w-[90vh] aspect-square rounded-full blur-[100px] z-0 blurredItem"></div>
         {/* <div className="circleBg w-[150vw] h-[300vh] absolute top-0 left-1/2 -translate-x-1/2"></div> */}
       </body>
     </html>
