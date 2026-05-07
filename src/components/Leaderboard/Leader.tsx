@@ -23,20 +23,20 @@ export default function Leader({ player, rank }: LeaderProps) {
 
   return (
     <div
-      className={`w-full h-[44px] flex flex-row items-center md:px-5 px-3 py-2 border-b border-white/10 lg:text-sm md:text-xs text-[10px] transition-colors ${
+      className={`w-full h-[44px] flex flex-row items-center md:px-5 px-3 py-2 border-b border-[var(--card-border)] lg:text-sm md:text-xs text-[10px] transition-colors ${
         isCurrentUser
           ? "bg-emerald-500/20 border-emerald-500/30"
-          : "hover:bg-white/5"
+          : "hover:bg-[var(--card-bg)]"
       }`}
     >
-      <p className={`md:w-[15%] w-[20%] font-medium ${rank <= 3 ? "opacity-100" : "opacity-70"}`}>
+      <p className={`md:w-[15%] w-[20%] font-medium ${rank <= 3 ? "" : "text-[var(--muted-foreground)]"}`}>
         {rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank}
       </p>
       <p className={`md:w-[52.5%] w-[40%] lg:text-sm md:text-xs text-[8px] truncate ${isCurrentUser ? "font-semibold" : ""}`}>
         {player.userId}
       </p>
       <p className="md:w-[15%] w-[20%] font-medium">{player._sum.wins}</p>
-      <p className="md:w-[17.5%] w-[20%] opacity-70">
+      <p className="md:w-[17.5%] w-[20%] text-[var(--muted-foreground)]">
         {player._sum.wins && player._sum.losses
           ? formatNumber(player._sum.wins / player._sum.losses)
           : player._sum.wins

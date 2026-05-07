@@ -19,7 +19,7 @@ export default function AnswerCard({
 
   const getCardStyles = () => {
     if (!isSelected) {
-      return "bg-white/5 border-white/20 hover:bg-white/10 hover:border-white/30";
+      return "bg-[var(--card-bg)] border-[var(--card-border)] hover:bg-[var(--card-bg-hover)] hover:border-[var(--card-border-hover)]";
     }
     if (isCorrect) {
       return "bg-emerald-500/20 border-emerald-500/50";
@@ -27,12 +27,12 @@ export default function AnswerCard({
     if (wasSelected) {
       return "bg-red-500/20 border-red-500/50";
     }
-    return "bg-white/5 border-white/10 opacity-50";
+    return "bg-[var(--card-bg)] border-[var(--card-border)] opacity-50";
   };
 
   const getBadgeStyles = () => {
     if (!isSelected) {
-      return "bg-white/10 text-white";
+      return "bg-[var(--card-bg-hover)] text-[var(--foreground)]";
     }
     if (isCorrect) {
       return "bg-emerald-500 text-white";
@@ -40,7 +40,7 @@ export default function AnswerCard({
     if (wasSelected) {
       return "bg-red-500 text-white";
     }
-    return "bg-white/10 text-white/50";
+    return "bg-[var(--card-bg)] text-[var(--muted)]";
   };
 
   return (

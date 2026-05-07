@@ -25,7 +25,20 @@ export default function InterviewPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [numCorrect, setNumCorrect] = useState(0);
 
-  const [position, setPosition] = useState<string>("Frontend");
+  const [position, setPosition] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
+  // Must contain at least one role word
+  const roleKeywords = [
+    "developer", "engineer", "programmer", "coder", "dev",
+    "architect", "scientist", "analyst", "specialist",
+    "devops", "sre", "qa", "tester",
+  ];
+
+  function isDevRole(input: string): boolean {
+    const lower = input.toLowerCase();
+    return roleKeywords.some((keyword) => lower.includes(keyword));
+  }
 
   async function fetchAllQuestions() {
     setLoadingGame(true);
@@ -74,6 +87,19 @@ export default function InterviewPage() {
   }
 
   function handleStart() {
+    const trimmed = position.trim();
+
+    if (!trimmed || trimmed.length < 3) {
+      setError("Please enter a developer role");
+      return;
+    }
+
+    if (!isDevRole(trimmed)) {
+      setError("This doesn't look like a developer role");
+      return;
+    }
+
+    setError("");
     setStartGame(true);
     fetchAllQuestions();
   }
@@ -95,20 +121,30 @@ export default function InterviewPage() {
       {!startGame ? (
         <div className="flex flex-col flex-1 md:justify-center items-center font-ibmPlexMono gap-y-6 mt-8 md:mt-0">
           <Title title="Interview" />
-          <p className="max-w-[40rem] text-[#FFFFFF99] md:text-center text-start md:text-base text-xs">
+          <p className="max-w-[40rem] text-[var(--muted)] md:text-center text-start md:text-base text-xs">
             Practice {TOTAL_ROUNDS} multiple-choice questions for your desired
             role. Stats won't be recorded.
           </p>
           <div className="flex flex-col items-center gap-y-2 mt-2">
-            <label className="text-xs md:text-sm font-medium opacity-50 uppercase tracking-wider">
+            <label className="text-xs md:text-sm font-medium text-[var(--muted)] uppercase tracking-wider">
               Target Role
             </label>
             <input
               type="text"
               placeholder="e.g. Senior Backend Node.js Developer"
-              className="md:w-96 w-[85vw] max-w-96 px-4 py-3 md:text-sm text-xs rounded-xl bg-white/5 border border-white/20 text-white placeholder-white/40 focus:border-white/40 focus:bg-white/10 focus:outline-none transition-all duration-200"
-              onChange={(e) => setPosition(e.target.value)}
+              className={`md:w-96 w-[85vw] max-w-96 px-4 py-3 md:text-sm text-xs rounded-xl bg-[var(--card-bg)] border text-[var(--foreground)] placeholder-[var(--muted)] focus:bg-[var(--card-bg-hover)] focus:outline-none transition-all duration-200 ${
+                error
+                  ? "border-red-500/50 focus:border-red-500/70"
+                  : "border-[var(--card-border)] focus:border-[var(--card-border-hover)]"
+              }`}
+              onChange={(e) => {
+                setPosition(e.target.value);
+                if (error) setError("");
+              }}
             />
+            {error && (
+              <p className="text-red-400 text-xs mt-1">{error}</p>
+            )}
           </div>
           <StartButton startGame={handleStart} title="START INTERVIEW" />
         </div>

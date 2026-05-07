@@ -99,13 +99,13 @@ export default function Quiz({
         {countdown ? (
           <div className="flex flex-row gap-3 mt-2">
             <button
-              className="slideIn bg-white/90 hover:bg-white text-black md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
+              className="slideIn bg-[var(--foreground)] hover:opacity-90 text-[var(--background)] md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
               onClick={handleNextGame}
             >
               NEXT {maxRounds ? "ROUND" : "QUESTION"}
             </button>
             <button
-              className="slideIn bg-white/10 border border-white/20 hover:bg-white/20 md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
+              className="slideIn bg-[var(--card-bg)] border border-[var(--card-border)] hover:bg-[var(--card-bg-hover)] md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
               onClick={handleLeaveGame}
             >
               LEAVE

@@ -26,13 +26,13 @@ export default function CircleLoading() {
     >
       {/* Bouncing dots */}
       <div className="flex items-center gap-1.5">
-        <div className="w-2.5 h-2.5 rounded-full bg-white/80 animate-[bounce-dot_1s_ease-in-out_infinite]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-white/80 animate-[bounce-dot_1s_ease-in-out_infinite_0.15s]" />
-        <div className="w-2.5 h-2.5 rounded-full bg-white/80 animate-[bounce-dot_1s_ease-in-out_infinite_0.3s]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[var(--foreground)] opacity-80 animate-[bounce-dot_1s_ease-in-out_infinite]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[var(--foreground)] opacity-80 animate-[bounce-dot_1s_ease-in-out_infinite_0.15s]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[var(--foreground)] opacity-80 animate-[bounce-dot_1s_ease-in-out_infinite_0.3s]" />
       </div>
 
       {/* Random message */}
-      <p className="text-sm md:text-base font-medium opacity-60">
+      <p className="text-sm md:text-base font-medium text-[var(--muted)]">
         {message}...
       </p>
     </div>

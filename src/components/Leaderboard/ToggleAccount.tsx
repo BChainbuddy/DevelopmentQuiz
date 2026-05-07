@@ -72,23 +72,23 @@ export default function ToggleAccount({
       />
 
       <div className="flex flex-col items-center gap-y-3 mt-4">
-        <p className="md:text-base text-sm font-medium opacity-80">Public Account</p>
+        <p className="md:text-base text-sm font-medium text-[var(--muted-foreground)]">Public Account</p>
         <button
-          className="md:h-[32px] md:w-[60px] w-[52px] h-[28px] bg-white/10 border border-white/20 rounded-full relative transition-colors hover:bg-white/15"
+          className="md:h-[32px] md:w-[60px] w-[52px] h-[28px] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full relative transition-colors hover:bg-[var(--card-bg-hover)]"
           onClick={handleToggle}
         >
           <div
             className={`rounded-full md:h-[26px] md:w-[26px] h-[22px] w-[22px] absolute top-[2px] transition-all duration-300 ${
               isPublic
                 ? "bg-emerald-500 md:translate-x-[31px] translate-x-[27px]"
-                : "bg-white/40 translate-x-[3px]"
+                : "bg-[var(--muted)] translate-x-[3px]"
             }`}
           />
         </button>
       </div>
 
-      <div className="flex flex-col items-center gap-y-2 mt-6 bg-white/5 border border-white/10 rounded-xl px-8 py-5 backdrop-blur-sm">
-        <p className="md:text-sm text-xs font-medium opacity-60 uppercase tracking-wider">Your Rank</p>
+      <div className="flex flex-col items-center gap-y-2 mt-6 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl px-8 py-5 backdrop-blur-sm">
+        <p className="md:text-sm text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Your Rank</p>
         <p className="md:text-5xl text-3xl font-bold">
           {rank ? `#${rank}` : "—"}
         </p>

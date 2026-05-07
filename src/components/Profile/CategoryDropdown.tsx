@@ -44,13 +44,13 @@ export default function CategoryDropdown({
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-10 px-4 py-2 bg-[var(--background)]/80 backdrop-blur-md border border-white/20 rounded-lg flex justify-between items-center transition-all duration-200 hover:border-white/40 focus:outline-none focus:border-white/50"
+        className="w-full h-10 px-4 py-2 bg-[var(--background)]/80 backdrop-blur-md border border-[var(--card-border)] rounded-lg flex justify-between items-center transition-all duration-200 hover:border-[var(--card-border-hover)] focus:outline-none focus:border-[var(--card-border-hover)]"
       >
-        <span className="md:text-sm text-xs font-medium opacity-90">
+        <span className="md:text-sm text-xs font-medium">
           {selectedCategory}
         </span>
         <svg
-          className={`md:h-4 md:w-4 h-3.5 w-3.5 opacity-60 transition-transform duration-200 ${
+          className={`md:h-4 md:w-4 h-3.5 w-3.5 text-[var(--muted)] transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           xmlns="http://www.w3.org/2000/svg"
@@ -73,15 +73,15 @@ export default function CategoryDropdown({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute mt-2 w-full bg-[var(--background)]/95 backdrop-blur-md border border-white/20 rounded-lg shadow-lg z-20 overflow-hidden"
+            className="absolute mt-2 w-full bg-[var(--background)]/95 backdrop-blur-md border border-[var(--card-border)] rounded-lg shadow-lg z-20 overflow-hidden"
           >
             <ul className="max-h-60 overflow-auto py-1">
               <li
                 onClick={() => handleSelect("All")}
                 className={`md:px-4 py-2.5 px-3 cursor-pointer md:text-sm text-xs transition-all duration-150 ${
                   selectedCategory === "All"
-                    ? "bg-white/10 font-medium"
-                    : "opacity-70 hover:opacity-100 hover:bg-white/5"
+                    ? "bg-[var(--card-bg-hover)] font-medium"
+                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card-bg)]"
                 }`}
               >
                 All
@@ -92,8 +92,8 @@ export default function CategoryDropdown({
                   onClick={() => handleSelect(cat.name)}
                   className={`md:px-4 py-2.5 px-3 cursor-pointer md:text-sm text-xs transition-all duration-150 ${
                     selectedCategory === cat.name
-                      ? "bg-white/10 font-medium"
-                      : "opacity-70 hover:opacity-100 hover:bg-white/5"
+                      ? "bg-[var(--card-bg-hover)] font-medium"
+                      : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card-bg)]"
                   }`}
                 >
                   {cat.name}

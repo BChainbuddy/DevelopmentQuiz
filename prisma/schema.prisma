@@ -16,20 +16,31 @@ datasource db {
 }
 
 model Profile {
-  username  String      @id
-  public    Boolean     @default(false)
-  userGames UserGames[]
-  
+  username     String            @id
+  public       Boolean           @default(false)
+  userGames    UserGames[]
+  achievements UserAchievement[]
+
   @@index(username)
 }
 
 model UserGames {
   id           Int      @id @default(autoincrement())
   userId       String
-  categoryName String   
+  categoryName String
   wins         Int      @default(0)
   losses       Int      @default(0)
 
   profile      Profile  @relation(fields: [userId], references: [username])
   @@unique([userId, categoryName], name: "userId_categoryName")
+}
+
+model UserAchievement {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  profile       Profile  @relation(fields: [userId], references: [username])
+  @@unique([userId, achievementId], name: "userId_achievementId")
 }

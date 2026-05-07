@@ -25,15 +25,15 @@ export default function CategoryBreakdown({
         return (
           <div
             key={cat.categoryName}
-            className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-colors"
+            className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-4 hover:bg-[var(--card-bg-hover)] transition-colors"
           >
             <div className="flex items-center justify-between mb-3">
               <p className="font-medium truncate flex-1">{cat.categoryName}</p>
-              <p className="text-sm opacity-50 ml-2">{total} games</p>
+              <p className="text-sm text-[var(--muted)] ml-2">{total} games</p>
             </div>
 
             {/* Progress bar */}
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden mb-2">
+            <div className="h-2 bg-[var(--card-bg-hover)] rounded-full overflow-hidden mb-2">
               <div
                 className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500"
                 style={{ width: `${winRate}%` }}
@@ -42,7 +42,7 @@ export default function CategoryBreakdown({
 
             <div className="flex items-center justify-between text-sm">
               <span className="text-emerald-400">{cat.wins}W</span>
-              <span className="opacity-50">{winRate.toFixed(0)}%</span>
+              <span className="text-[var(--muted)]">{winRate.toFixed(0)}%</span>
               <span className="text-red-400">{cat.losses}L</span>
             </div>
           </div>

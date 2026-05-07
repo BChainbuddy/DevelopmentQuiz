@@ -22,7 +22,7 @@ export default function SmNavBar() {
       {pathname !== "/" && (
         <>
           <motion.button
-            className="fixed right-4 top-4 p-2 md:hidden flex items-center justify-center bg-[var(--background)] rounded-lg border border-white/20 z-50 backdrop-blur-sm"
+            className="fixed right-4 top-4 p-2 md:hidden flex items-center justify-center bg-[var(--background)] rounded-lg border border-[var(--card-border)] z-50 backdrop-blur-sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
@@ -42,7 +42,7 @@ export default function SmNavBar() {
                 animate={{ x: "0%" }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 80, damping: 12 }}
-                className="fixed md:hidden top-0 right-0 w-[70%] min-w-[12rem] h-full bg-[var(--background)]/95 backdrop-blur-md z-40 flex flex-col justify-center items-center p-6 border-l border-white/10 gap-y-6"
+                className="fixed md:hidden top-0 right-0 w-[70%] min-w-[12rem] h-full bg-[var(--background)]/95 backdrop-blur-md z-40 flex flex-col justify-center items-center p-6 border-l border-[var(--card-border)] gap-y-6"
               >
                 {navOptions.map((item, i) => (
                   <SmNavOption

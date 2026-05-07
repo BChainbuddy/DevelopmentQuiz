@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="text-white md:py-4 py-2 text-center text-sm">
+    <footer className="text-white md:py-4 py-2 text-center text-sm bg-[#0a0a0a]">
       <p>
         Built by{" "}
         <a
