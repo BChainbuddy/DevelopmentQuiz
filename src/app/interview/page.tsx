@@ -5,6 +5,7 @@ import Results from "@/components/Quiz/Results";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 import { interviewPrompt } from "@/lib/prompts";
+import { isValidQuestion } from "@/lib/questionShape";
 import StartButton from "@/ui/StartButton";
 import Title from "@/ui/Title";
 
@@ -40,8 +41,13 @@ export default function InterviewPage() {
     return roleKeywords.some((keyword) => lower.includes(keyword));
   }
 
-  async function fetchAllQuestions() {
+  // The server repairs invalid payloads itself (see lib/openai.ts), so this is
+  // a thin outer guard rather than the primary retry path.
+  const MAX_RETRIES = 1;
+
+  async function fetchAllQuestions(retryCount = 0) {
     setLoadingGame(true);
+    setError("");
     try {
       const prompt = interviewPrompt(position);
       const url = new URL("/api/getQuestions", window.location.origin);
@@ -51,32 +57,44 @@ export default function InterviewPage() {
       const res = await fetch(url.toString());
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      const { data: rawQuestions } = (await res.json()) as {
-        data: Array<{
-          question: string;
-          answers: string[];
-          correctAnswer: string;
-        }>;
-      };
-      const items = rawQuestions.map((q) => ({
-        question: q.question,
-        answers: q.answers.map((ans, i) => ({
-          choice: String.fromCharCode(65 + i), // 'A','B','C'
-          answer: ans,
-        })),
-        correctAnswer: q.correctAnswer,
-      }));
+      const payload = (await res.json()) as { data: unknown };
+      const rawQuestions = Array.isArray(payload.data) ? payload.data : [];
 
-      if (items.length !== TOTAL_ROUNDS) {
-        console.error(
-          `Expected ${TOTAL_ROUNDS} questions, got ${items.length}`
+      // A short or malformed set used to slip through and render a truncated
+      // interview; now it is a retry, then a visible error.
+      if (
+        rawQuestions.length !== TOTAL_ROUNDS ||
+        !rawQuestions.every(isValidQuestion)
+      ) {
+        if (retryCount < MAX_RETRIES) {
+          return fetchAllQuestions(retryCount + 1);
+        }
+        throw new Error(
+          `Expected ${TOTAL_ROUNDS} valid questions, got ${rawQuestions.length}`
         );
       }
-      setQuestionsList(items);
+
+      setQuestionsList(
+        rawQuestions.map((q) => ({
+          question: q.question,
+          answers: q.answers.map((answer, i) => ({
+            choice: String.fromCharCode(65 + i), // 'A','B','C'
+            answer,
+          })),
+          correctAnswer: q.correctAnswer,
+        }))
+      );
       setCurrentIndex(0);
       setNumCorrect(0);
     } catch (err) {
       console.error(err);
+      const message = err instanceof Error ? err.message : String(err);
+
+      if (!message.startsWith("HTTP") && retryCount < MAX_RETRIES) {
+        return fetchAllQuestions(retryCount + 1);
+      }
+
+      setError("Couldn't build the interview. Please try again.");
     } finally {
       setLoadingGame(false);
     }
@@ -151,6 +169,27 @@ export default function InterviewPage() {
       ) : loadingGame ? (
         <div className="flex flex-1 items-center justify-center">
           <CircleLoading />
+        </div>
+      ) : error ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-y-4 font-ibmPlexMono">
+          <p className="md:text-sm text-xs text-red-400 text-center">{error}</p>
+          <div className="flex flex-row gap-3">
+            <button
+              className="bg-[var(--foreground)] hover:opacity-90 text-[var(--background)] md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
+              onClick={() => fetchAllQuestions()}
+            >
+              TRY AGAIN
+            </button>
+            <button
+              className="bg-[var(--card-bg)] border border-[var(--card-border)] hover:bg-[var(--card-bg-hover)] md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
+              onClick={() => {
+                setError("");
+                setStartGame(false);
+              }}
+            >
+              BACK
+            </button>
+          </div>
         </div>
       ) : currentIndex >= TOTAL_ROUNDS ? (
         <Results percent={numCorrect / TOTAL_ROUNDS} />

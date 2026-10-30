@@ -4,6 +4,7 @@ import Quiz from "@/components/Quiz/Quiz";
 import CircleLoading from "@/ui/CircleLoading";
 import { useState } from "react";
 import { categories } from "@/data/categories";
+import { isValidQuestion } from "@/lib/questionShape";
 import { addLoss, addWin } from "@/actions/actions";
 import { useSession } from "next-auth/react";
 import StartButton from "@/ui/StartButton";
@@ -18,20 +19,25 @@ export default function QuizPage() {
     []
   );
   const [correctAnswer, setCorrectAnswer] = useState("");
+  const [error, setError] = useState("");
 
   const [category, setCategory] = useState(categories[0]);
 
-  const MAX_RETRIES = 3;
+  // The server repairs invalid payloads itself (see lib/openai.ts), so this is
+  // a thin outer guard rather than the primary retry path.
+  const MAX_RETRIES = 1;
 
   const { data: session } = useSession();
 
   const handleNewGame = () => {
+    setError("");
     setStartGame(true);
     fetchOneQuestion();
   };
 
   async function fetchOneQuestion(retryCount = 0) {
     setLoadingGame(true);
+    setError("");
     try {
       const url = new URL("/api/getQuestions", window.location.origin);
       url.searchParams.set("prompt", category.prompt);
@@ -40,52 +46,35 @@ export default function QuizPage() {
       const res = await fetch(url.toString());
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
-      const payload = (await res.json()) as {
-        data:
-          | { question: string; answers: string[]; correctAnswer: string }
-          | Array<{
-              question: string;
-              answers: string[];
-              correctAnswer: string;
-            }>;
-      };
+      const payload = (await res.json()) as { data: unknown };
+      const item = Array.isArray(payload.data) ? payload.data[0] : payload.data;
 
-      let item = payload.data;
-      if (Array.isArray(item)) {
-        item = item[0];
-      }
-
-      const { question: q, answers: ansArr, correctAnswer: ca } = item;
-
-      if (
-        typeof q !== "string" ||
-        !Array.isArray(ansArr) ||
-        ansArr.length !== 3 ||
-        !["A", "B", "C"].includes(ca)
-      ) {
+      if (!isValidQuestion(item)) {
         if (retryCount < MAX_RETRIES) {
           return fetchOneQuestion(retryCount + 1);
         }
         throw new Error("Invalid question structure after retries");
       }
 
-      const mapped = ansArr.map((a, i) => ({
-        choice: String.fromCharCode(65 + i),
-        answer: a,
-      }));
-
-      setQuestion(q);
-      setAnswers(mapped);
-      setCorrectAnswer(ca);
-    } catch (err: any) {
+      setQuestion(item.question);
+      setAnswers(
+        item.answers.map((answer, i) => ({
+          choice: String.fromCharCode(65 + i),
+          answer,
+        }))
+      );
+      setCorrectAnswer(item.correctAnswer);
+    } catch (err) {
       console.error("Error fetching question:", err);
-      if (
-        !(err.message as string).startsWith("HTTP") &&
-        retryCount < MAX_RETRIES
-      ) {
+      const message = err instanceof Error ? err.message : String(err);
+
+      // Transport failures are not worth retrying; a bad payload is.
+      if (!message.startsWith("HTTP") && retryCount < MAX_RETRIES) {
         return fetchOneQuestion(retryCount + 1);
       }
-      throw err;
+
+      // Surface it rather than rethrowing into an unhandled rejection.
+      setError("Couldn't load a question. Please try again.");
     } finally {
       setLoadingGame(false);
     }
@@ -145,6 +134,24 @@ export default function QuizPage() {
       ) : loadingGame ? (
         <div className="flex w-full flex-1 items-center justify-center">
           <CircleLoading />
+        </div>
+      ) : error ? (
+        <div className="flex w-full flex-1 flex-col items-center justify-center gap-y-4 font-ibmPlexMono">
+          <p className="md:text-sm text-xs text-red-400 text-center">{error}</p>
+          <div className="flex flex-row gap-3">
+            <button
+              className="bg-[var(--foreground)] hover:opacity-90 text-[var(--background)] md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
+              onClick={() => fetchOneQuestion()}
+            >
+              TRY AGAIN
+            </button>
+            <button
+              className="bg-[var(--card-bg)] border border-[var(--card-border)] hover:bg-[var(--card-bg-hover)] md:py-2 md:px-4 py-1.5 px-3 rounded-lg md:text-sm text-xs font-medium transition-all duration-200"
+              onClick={() => setStartGame(false)}
+            >
+              LEAVE
+            </button>
+          </div>
         </div>
       ) : (
         <Quiz
