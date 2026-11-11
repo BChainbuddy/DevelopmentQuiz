@@ -144,16 +144,20 @@ export default function InterviewPage() {
             role. Stats won't be recorded.
           </p>
           <div className="flex flex-col items-center gap-y-2 mt-2">
-            <label className="text-xs md:text-sm font-medium text-[var(--muted)] uppercase tracking-wider">
+            <label
+              htmlFor="target-role"
+              className="text-xs md:text-sm font-medium text-[var(--muted)] uppercase tracking-wider cursor-pointer select-none"
+            >
               Target Role
             </label>
             <input
+              id="target-role"
               type="text"
               placeholder="e.g. Senior Backend Node.js Developer"
-              className={`md:w-96 w-[85vw] max-w-96 px-4 py-3 md:text-sm text-xs rounded-xl bg-[var(--card-bg)] border text-[var(--foreground)] placeholder-[var(--muted)] focus:bg-[var(--card-bg-hover)] focus:outline-none transition-all duration-200 ${
+              className={`md:w-96 w-[85vw] max-w-96 px-4 py-3 md:text-sm text-xs rounded-xl bg-[var(--card-bg)] border text-[var(--foreground)] placeholder-[var(--muted)] focus:bg-[var(--card-bg-hover)] focus:outline-none focus:ring-2 transition-colors duration-200 ${
                 error
-                  ? "border-red-500/50 focus:border-red-500/70"
-                  : "border-[var(--card-border)] focus:border-[var(--card-border-hover)]"
+                  ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/40"
+                  : "border-[var(--card-border)] focus:border-emerald-500/70 focus:ring-emerald-500/30"
               }`}
               onChange={(e) => {
                 setPosition(e.target.value);
