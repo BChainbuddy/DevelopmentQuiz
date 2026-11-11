@@ -1,68 +1,56 @@
 "use client";
 
 import { togglePublic } from "@/actions/actions";
+import { queryKeys, useUserProfile, useUserRank } from "@/hooks/queries";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import CategoryDropdown from "../Profile/CategoryDropdown";
 
 interface ToggleAccountProps {
-  getData: () => void;
   setCategory: (category: string) => void;
   category: string;
 }
 
 export default function ToggleAccount({
-  getData,
   setCategory,
   category,
 }: ToggleAccountProps) {
-  const [isPublic, setIsPublic] = useState<boolean>();
-  const [rank, setRank] = useState<number>(0);
-
   const { data: session } = useSession();
+  const username = session?.user?.email ?? undefined;
 
-  const handleToggle = async () => {
-    await togglePublic(session?.user?.email ?? "", !isPublic);
+  const queryClient = useQueryClient();
 
-    setIsPublic(!isPublic);
-    setRank(0);
+  const { data: profile } = useUserProfile(username);
+  const isPublic = profile?.public ?? false;
 
-    getData();
-  };
+  const { data: rank } = useUserRank(username, category, isPublic);
 
-  const getUserData = async () => {
-    const response = await fetch(`/api/user/${session?.user?.email}`);
-    if (!response.ok) {
-      throw new Error("Error fetching user data");
-    }
-
-    const data = await response.json();
-    setIsPublic(data.data.public);
-  };
-
-  const getRank = async () => {
-    const response = await fetch(
-      `/api/user/${session?.user?.email}/${category}/rank`
-    );
-    if (!response.ok) {
-      throw new Error("Error fetching user rank");
-    }
-
-    const data = await response.json();
-    setRank(data.rank);
-  };
-
-  useEffect(() => {
-    if (session) {
-      getUserData();
-    }
-  }, [session]);
-
-  useEffect(() => {
-    if (isPublic) {
-      getRank();
-    }
-  }, [isPublic, category]);
+  const toggleMutation = useMutation({
+    mutationFn: (nextPublic: boolean) =>
+      togglePublic(username ?? "", nextPublic),
+    onMutate: async (nextPublic) => {
+      // Flip the switch immediately; the refetch below confirms it.
+      const key = queryKeys.userProfile(username ?? "");
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<{ public: boolean } | null>(key);
+      queryClient.setQueryData(key, (old: { public: boolean } | null) =>
+        old ? { ...old, public: nextPublic } : old
+      );
+      return { previous, key };
+    },
+    onError: (_error, _nextPublic, context) => {
+      if (context) {
+        queryClient.setQueryData(context.key, context.previous);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.userProfile(username ?? ""),
+      });
+      queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+      queryClient.invalidateQueries({ queryKey: ["userRank"] });
+    },
+  });
 
   return (
     <div className="flex flex-col font-inter items-center flex-1 md:order-2 order-1 gap-y-6">
@@ -74,8 +62,9 @@ export default function ToggleAccount({
       <div className="flex flex-col items-center gap-y-3 mt-4">
         <p className="md:text-base text-sm font-medium text-[var(--muted-foreground)]">Public Account</p>
         <button
-          className="md:h-[32px] md:w-[60px] w-[52px] h-[28px] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full relative transition-colors hover:bg-[var(--card-bg-hover)]"
-          onClick={handleToggle}
+          className="md:h-[32px] md:w-[60px] w-[52px] h-[28px] bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full relative transition-colors hover:bg-[var(--card-bg-hover)] disabled:opacity-60"
+          disabled={!username || toggleMutation.isPending}
+          onClick={() => toggleMutation.mutate(!isPublic)}
         >
           <div
             className={`rounded-full md:h-[26px] md:w-[26px] h-[22px] w-[22px] absolute top-[2px] transition-all duration-300 ${
@@ -90,7 +79,7 @@ export default function ToggleAccount({
       <div className="flex flex-col items-center gap-y-2 mt-6 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl px-8 py-5 backdrop-blur-sm">
         <p className="md:text-sm text-xs font-medium text-[var(--muted)] uppercase tracking-wider">Your Rank</p>
         <p className="md:text-5xl text-3xl font-bold">
-          {rank ? `#${rank}` : "—"}
+          {isPublic && rank ? `#${rank}` : "—"}
         </p>
       </div>
     </div>

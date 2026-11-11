@@ -4,6 +4,7 @@ import { ibmPlexMono, inriaSans, inter } from "./fonts/fonts";
 import Navbar from "@/components/Navigation/NavBar";
 import SessionProvider from "@/components/Sessionprovider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import QueryProvider from "@/components/QueryProvider";
 
 export const metadata: Metadata = {
   title: "DevQuiz",
@@ -25,10 +26,12 @@ export default async function RootLayout({
       >
         <ThemeProvider>
           <SessionProvider>
-            <Navbar />
-            <main className="px-[10%] flex flex-col flex-1 z-10 relative overflow-y-auto">
-              {children}
-            </main>
+            <QueryProvider>
+              <Navbar />
+              <main className="px-[10%] flex flex-col flex-1 z-10 relative overflow-y-auto">
+                {children}
+              </main>
+            </QueryProvider>
           </SessionProvider>
         </ThemeProvider>
         <div className="absolute top-[90vh] left-1/2 -translate-x-1/2 w-[90vh] aspect-square rounded-full blur-[100px] z-0 blurredItem"></div>

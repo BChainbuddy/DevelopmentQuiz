@@ -8,6 +8,7 @@ import { isValidQuestion } from "@/lib/questionShape";
 import { addLoss, addWin } from "@/actions/actions";
 import { useSession } from "next-auth/react";
 import StartButton from "@/ui/StartButton";
+import { useInvalidateStats } from "@/hooks/queries";
 import Title from "@/ui/Title";
 
 export default function QuizPage() {
@@ -28,6 +29,7 @@ export default function QuizPage() {
   const MAX_RETRIES = 1;
 
   const { data: session } = useSession();
+  const invalidateStats = useInvalidateStats();
 
   const handleNewGame = () => {
     setError("");
@@ -86,6 +88,9 @@ export default function QuizPage() {
     } else {
       await addLoss(session?.user?.email ?? "", category.name);
     }
+
+    // The score just moved, so profile stats, rank and leaderboard are stale.
+    invalidateStats();
   };
 
   return (

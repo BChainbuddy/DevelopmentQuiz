@@ -1,29 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import CategoryBreakdown from "./CategoryBreakdown";
 import Achievements from "./Achievements";
 import { categories as quizCategories } from "@/data/categories";
+import { useProfileStats } from "@/hooks/queries";
 
 const quizCategoryNames = quizCategories.map((c) => c.name);
-
-interface CategoryStat {
-  categoryName: string;
-  wins: number;
-  losses: number;
-}
-
-interface ProfileData {
-  categories: CategoryStat[];
-  totals: { wins: number; losses: number };
-  bestCategory: {
-    name: string;
-    winRate: string;
-    wins: number;
-    losses: number;
-  } | null;
-}
 
 interface ProfileDashboardProps {
   profile: { username: string; public: boolean } | null;
@@ -36,23 +19,8 @@ export default function ProfileDashboard({
   userName,
   userEmail,
 }: ProfileDashboardProps) {
-  const [data, setData] = useState<ProfileData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!profile) return;
-
-    fetch(`/api/usergames/${profile.username}/all`, { cache: "no-store" })
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching stats:", err);
-        setLoading(false);
-      });
-  }, [profile]);
+  const { data, isPending } = useProfileStats(profile?.username);
+  const loading = Boolean(profile) && isPending;
 
   // Separate quiz categories from interview results
   const quizStats = data?.categories.filter((c) =>
