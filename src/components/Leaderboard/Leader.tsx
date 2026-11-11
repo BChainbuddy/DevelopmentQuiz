@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { AggregatedUserGames } from "@/app/leaderboard/page";
+import { AggregatedUserGames } from "@/hooks/queries";
 
 interface LeaderProps {
   player: AggregatedUserGames;

@@ -1,11 +1,12 @@
-import { AggregatedUserGames } from "@/app/leaderboard/page";
+import { AggregatedUserGames } from "@/hooks/queries";
 import Leader from "./Leader";
 
 interface BoardProps {
   data: AggregatedUserGames[];
+  loading?: boolean;
 }
 
-export default function Board({ data }: BoardProps) {
+export default function Board({ data, loading = false }: BoardProps) {
   return (
     <div className="max-w-[50rem] md:flex-[2] lg:h-[30rem] md:h-[25rem] h-[35vh] bg-[var(--background)]/80 backdrop-blur-md border border-[var(--card-border)] font-ibmPlexMono rounded-xl flex flex-col order-2 md:order-1 overflow-hidden">
       <div className="w-full flex flex-row items-center md:pl-5 bg-[var(--card-bg-hover)] py-3 md:pr-[36px] px-3 lg:text-sm md:text-xs text-xs font-medium text-[var(--muted-foreground)]">
@@ -22,6 +23,8 @@ export default function Board({ data }: BoardProps) {
               <Leader player={item} rank={i + 1} key={i} />
             ))}
           </>
+        ) : loading ? (
+          <div className="text-center py-8 text-[var(--muted)]">Loading...</div>
         ) : (
           <div className="text-center py-8 text-[var(--muted)]">No players yet!</div>
         )}
